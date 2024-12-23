@@ -1,7 +1,10 @@
-export function element<TState extends Record<string, any>>(
-  id: string,
-  state?: TState
-): KentElement<TState> {
+import type { Action } from "./types";
+
+export function element<TState extends Record<string, any>>(args: {
+  id: string;
+  state?: TState;
+}): KentElement<TState> {
+  const { id, state } = args;
   const baseElement = document.getElementById(id);
 
   if (!baseElement) {
@@ -11,15 +14,9 @@ export function element<TState extends Record<string, any>>(
   return new KentElement<TState>(baseElement, state);
 }
 
-type Action<TState extends Record<string, any>> = (
-  element: KentElement<TState>,
-  event?: Event
-) => void;
-
 export class KentElement<
   TState extends Record<string, any>
 > extends HTMLElement {
-  content: any;
   state: TState;
 
   constructor(baseElement: HTMLElement, state?: TState) {
@@ -31,31 +28,16 @@ export class KentElement<
     this.state = state || ({} as TState);
   }
 
-  setContent<T>(value: T) {
-    this.content = value;
-    this.innerText = String(value);
-  }
-
   setChildren(children: KentElement<any>) {
     this.innerHTML = children.innerHTML;
   }
 
-  getContent<T>() {
-    return this.content as T;
-  }
-
-  /**
-   * Binds a handler for a specific event type.
-   */
   onEvent(eventType: string, action: Action<TState>) {
     this.addEventListener(eventType, (event) => {
       action(this, event);
     });
   }
 
-  /**
-   * Helper methods for common events.
-   */
   onClick(action: (element: KentElement<TState>, event?: MouseEvent) => void) {
     this.onEvent("click", action as Action<TState>);
   }
@@ -96,5 +78,54 @@ export class KentElement<
     this.childNodes.forEach((child, index) => {
       child.textContent = values[index];
     });
+  }
+
+  duplicate() {
+    const clone = this.cloneNode(true);
+    const parent = this.parentNode;
+    if (!parent) {
+      throw new Error(
+        `KentElement with id ${this.id} does not have parent to run duplicate`
+      );
+    }
+    this.parentNode?.appendChild(clone);
+  }
+
+  private async fetcher(url: URL, method: string) {
+    const data = await fetch(url, {
+      method: method,
+      body: JSON.stringify({
+        state: this.state,
+      }),
+    });
+    return data;
+  }
+
+  async delete(url: URL, logic?: (data: Response) => void | Promise<void>) {
+    const data = await this.fetcher(url, "DELETE");
+    if (logic) {
+      await Promise.resolve(logic(data));
+    }
+  }
+
+  async put(url: URL, logic?: (data: Response) => void | Promise<void>) {
+    const data = await this.fetcher(url, "PUT");
+    if (logic) {
+      await Promise.resolve(logic(data));
+    }
+  }
+
+  async post(url: URL, logic?: (data: Response) => void | Promise<void>) {
+    const data = await this.fetcher(url, "POST");
+    if (logic) {
+      await Promise.resolve(logic(data));
+    }
+  }
+
+  async get(url: URL, logic?: (data: Response) => void | Promise<void>) {
+    const data = await this.fetcher(url, "GET");
+    if (logic) {
+      await Promise.resolve(logic(data));
+    }
   }
 }
