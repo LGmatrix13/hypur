@@ -5,7 +5,7 @@
     "@types/bun": "latest"
   },
   "scripts": {
-    "build": "bun build ./src/index.ts --outdir ../../builds/hypur-router"
+    "build": "bun build ./src/index.ts --outdir ../../builds/hypur-router --minify"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
