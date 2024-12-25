@@ -1,1 +1,47 @@
-async function w(o){return await(await fetch(o,{method:"GET",headers:{"Content-Type":"text/html; charset=utf-8"}})).text()}window.HYPUR={LOADING:!1};function i(){window.HYPUR.LOADING=!0}function p(){window.HYPUR.LOADING=!1}var n={start:i,end:p};document.addEventListener("DOMContentLoaded",()=>{let o=document.querySelectorAll('a[hypur-link="true"]'),s=window.location.origin;o.forEach((a)=>{let t=a,c=t.getAttribute("href");if(c===null)throw new Error(`hypur link of id ${t.id} does not have an href attribute`);let r=new URL(c,s);t.addEventListener("click",async(d)=>{n.start(),d.preventDefault();let f=await w(r);document.body.innerHTML=f,n.end()})})});
+// src/fetcher.ts
+async function fetcher(url) {
+  const response = await fetch(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "text/html; charset=utf-8"
+    }
+  });
+  const html = await response.text();
+  return html;
+}
+
+// src/loading.ts
+window.HYPUR = {
+  LOADING: false
+};
+function start() {
+  window.HYPUR.LOADING = true;
+}
+function end() {
+  window.HYPUR.LOADING = false;
+}
+var loading = {
+  start,
+  end
+};
+
+// src/links.ts
+document.addEventListener("DOMContentLoaded", () => {
+  const links = document.querySelectorAll(`a[hypur-link="true"]`);
+  const baseUrl = window.location.origin;
+  links.forEach((link) => {
+    const element = link;
+    const href = element.getAttribute("href");
+    if (href === null) {
+      throw new Error(`hypur link of id ${element.id} does not have an href attribute`);
+    }
+    const url = new URL(href, baseUrl);
+    element.addEventListener("click", async (event) => {
+      loading.start();
+      event.preventDefault();
+      const html = await fetcher(url);
+      document.body.innerHTML = html;
+      loading.end();
+    });
+  });
+});

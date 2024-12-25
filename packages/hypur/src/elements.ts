@@ -29,7 +29,7 @@ export class HypurElements<TState extends Record<string, any>> extends Array<
   /**
    * Binds a handler for a specific event type.
    */
-  onEvent(eventType: string, action: Action<TState>) {
+  onEvent(eventType: string, action: Action<TState, Event>) {
     this.forEach((element) => {
       element.baseElement.addEventListener(eventType, (event) => {
         action(element, event);
@@ -47,46 +47,42 @@ export class HypurElements<TState extends Record<string, any>> extends Array<
   /**
    * Helper methods for common events.
    */
-  onClick(action: (element: HypurElement<TState>, event?: MouseEvent) => void) {
-    this.onEvent("click", action as Action<TState>);
+  onClick(action: Action<TState, Event>) {
+    this.onEvent("click", action);
   }
 
-  onChange(action: (element: HypurElement<TState>, event?: Event) => void) {
-    this.onEvent("change", action as Action<TState>);
+  onChange(action: Action<TState, InputEvent>) {
+    this.onEvent("change", action as Action<TState, Event>);
   }
 
-  onInput(action: (element: HypurElement<TState>, event?: InputEvent) => void) {
-    this.onEvent("input", action as Action<TState>);
+  onInput(action: Action<TState, InputEvent>) {
+    this.onEvent("input", action as Action<TState, Event>);
   }
 
-  onMouseOver(
-    action: (element: HypurElement<TState>, event?: MouseEvent) => void
-  ) {
-    this.onEvent("mouseover", action as Action<TState>);
+  onMouseOver(action: Action<TState, MouseEvent>) {
+    this.onEvent("mouseover", action as Action<TState, Event>);
   }
 
-  onMouseOut(
-    action: (element: HypurElement<TState>, event?: MouseEvent) => void
-  ) {
-    this.onEvent("mouseout", action as Action<TState>);
+  onMouseOut(action: Action<TState, MouseEvent>) {
+    this.onEvent("mouseout", action as Action<TState, Event>);
   }
 
-  onKeyDown(
-    action: (element: HypurElement<TState>, event?: KeyboardEvent) => void
-  ) {
-    this.onEvent("keydown", action as Action<TState>);
+  onKeyDown(action: Action<TState, KeyboardEvent>) {
+    this.onEvent("keydown", action as Action<TState, Event>);
   }
 
-  onKeyUp(
-    action: (element: HypurElement<TState>, event?: KeyboardEvent) => void
-  ) {
-    this.onEvent("keyup", action as Action<TState>);
+  onKeyUp(action: Action<TState, KeyboardEvent>) {
+    this.onEvent("keyup", action as Action<TState, Event>);
   }
 
-  append(...values: any) {
+  append(state: Record<string, any>) {
     const last = this[this.length - 1];
-    const clone = new HypurElement(last.name, last.baseElement, last.state);
-    clone.spread(...values);
+    const clone = new HypurElement<TState>(
+      last.name,
+      last.baseElement,
+      state as TState
+    ).bind();
+    clone.setState(() => state as TState);
     this.append(clone);
   }
 }

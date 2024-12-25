@@ -1,3 +1,4 @@
+import { loading } from "./loading";
 import type { Action } from "./types";
 
 const stateStore = new WeakMap();
@@ -82,6 +83,16 @@ export function element<TState extends Record<string, any>>(
   return new HypurElement<TState>(name, baseElement, state);
 }
 
+async function fetcher(url: URL, method: string, baseElement: HTMLElement) {
+  loading.start();
+  const data = await fetch(url, {
+    method: method,
+    body: stateStore.get(baseElement),
+  });
+  loading.end();
+  return data;
+}
+
 export class HypurElement<TState extends Record<string, any>> {
   name: string;
   baseElement: HTMLElement;
@@ -126,7 +137,7 @@ export class HypurElement<TState extends Record<string, any>> {
     this.baseElement.innerHTML = children.baseElement.innerHTML;
   }
 
-  onEvent(eventType: string, action: Action<TState>) {
+  onEvent(eventType: string, action: Action<TState, Event>) {
     this.baseElement.addEventListener(eventType, (event) => {
       action(this, event);
     });
@@ -137,46 +148,32 @@ export class HypurElement<TState extends Record<string, any>> {
     return this;
   }
 
-  onClick(action: (element: HypurElement<TState>, event?: MouseEvent) => void) {
-    this.onEvent("click", action as Action<TState>);
+  onClick(action: Action<TState, MouseEvent>) {
+    this.onEvent("click", action as Action<TState, Event>);
   }
 
-  onChange(action: (element: HypurElement<TState>, event?: Event) => void) {
-    this.onEvent("change", action as Action<TState>);
+  onChange(action: Action<TState, Event>) {
+    this.onEvent("change", action);
   }
 
-  onInput(action: (element: HypurElement<TState>, event?: InputEvent) => void) {
-    this.onEvent("input", action as Action<TState>);
+  onInput(action: Action<TState, InputEvent>) {
+    this.onEvent("input", action as Action<TState, Event>);
   }
 
-  onMouseOver(
-    action: (element: HypurElement<TState>, event?: MouseEvent) => void
-  ) {
-    this.onEvent("mouseover", action as Action<TState>);
+  onMouseOver(action: Action<TState, MouseEvent>) {
+    this.onEvent("mouseover", action as Action<TState, Event>);
   }
 
-  onMouseOut(
-    action: (element: HypurElement<TState>, event?: MouseEvent) => void
-  ) {
-    this.onEvent("mouseout", action as Action<TState>);
+  onMouseOut(action: Action<TState, MouseEvent>) {
+    this.onEvent("mouseout", action as Action<TState, Event>);
   }
 
-  onKeyDown(
-    action: (element: HypurElement<TState>, event?: KeyboardEvent) => void
-  ) {
-    this.onEvent("keydown", action as Action<TState>);
+  onKeyDown(action: Action<TState, KeyboardEvent>) {
+    this.onEvent("keydown", action as Action<TState, Event>);
   }
 
-  onKeyUp(
-    action: (element: HypurElement<TState>, event?: KeyboardEvent) => void
-  ) {
-    this.onEvent("keyup", action as Action<TState>);
-  }
-
-  spread(...values: any[]) {
-    this.baseElement.childNodes.forEach((child, index) => {
-      child.textContent = values[index];
-    });
+  onKeyUp(action: Action<TState, KeyboardEvent>) {
+    this.onEvent("keyup", action as Action<TState, Event>);
   }
 
   get parent() {
@@ -202,37 +199,29 @@ export class HypurElement<TState extends Record<string, any>> {
     this.baseElement.remove();
   }
 
-  private async fetcher(url: URL, method: string) {
-    const data = await fetch(url, {
-      method: method,
-      body: this.baseElement.dataset.state as string,
-    });
-    return data;
-  }
-
   async delete(url: URL, logic?: (data: Response) => void | Promise<void>) {
-    const data = await this.fetcher(url, "DELETE");
+    const data = await fetcher(url, "DELETE", this.baseElement);
     if (logic) {
       await Promise.resolve(logic(data));
     }
   }
 
   async put(url: URL, logic?: (data: Response) => void | Promise<void>) {
-    const data = await this.fetcher(url, "PUT");
+    const data = await fetcher(url, "PUT", this.baseElement);
     if (logic) {
       await Promise.resolve(logic(data));
     }
   }
 
   async post(url: URL, logic?: (data: Response) => void | Promise<void>) {
-    const data = await this.fetcher(url, "POST");
+    const data = await fetcher(url, "POST", this.baseElement);
     if (logic) {
       await Promise.resolve(logic(data));
     }
   }
 
   async get(url: URL, logic?: (data: Response) => void | Promise<void>) {
-    const data = await this.fetcher(url, "GET");
+    const data = await fetcher(url, "GET", this.baseElement);
     if (logic) {
       await Promise.resolve(logic(data));
     }

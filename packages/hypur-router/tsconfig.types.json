@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "emitDeclarationOnly": true,
+    "declaration": true,
+    "outDir": "../../builds/hypur-router",
+    "rootDir": "./src"
+  },
+  "include": ["src/**/*.ts"]
+}
