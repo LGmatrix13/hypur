@@ -1,14 +1,7 @@
 {
-  "name": "kent",
-  "module": "index.ts",
-  "type": "module",
-  "devDependencies": {
-    "@types/bun": "latest"
-  },
-  "scripts": {
-    "build": "bun build.ts"
-  },
-  "peerDependencies": {
-    "typescript": "^5.0.0"
-  }
+  "name": "kent-packages",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ]
 }

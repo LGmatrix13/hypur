@@ -45,8 +45,7 @@ hideButton.onClick((element) => {
 });
 
 todoSubmitBtn.onEvent("submit", () => {
-  const value = todoInput.innerText;
-  todoInput.state.value = value;
+  todoInput.state.value = todoInput.innerText;
   todoInput.post(url, async (data) => {
     const json = await data.json();
     todos.append(json.task);

@@ -1,0 +1,14 @@
+{
+  "name": "kent",
+  "module": "index.ts",
+  "type": "module",
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "scripts": {
+    "build": "bun build ./src/index.ts --outdir ./build"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
