@@ -1,7 +1,7 @@
 import { fetcher } from "./fetcher";
 import { loading } from "./loading";
 
-export function links() {
+document.addEventListener("DOMContentLoaded", () => {
   const links = document.querySelectorAll(`a[hypur-link="true"]`);
   const baseUrl = window.location.origin; // Get the base URL of the current page
 
@@ -26,4 +26,4 @@ export function links() {
       loading.end();
     });
   });
-}
+});
