@@ -5,7 +5,7 @@
     "@types/bun": "latest"
   },
   "scripts": {
-    "build": "bun build ./src/index.ts --outdir ../../builds/hypur-router && bun run build:declaration",
+    "build": "bun build ./src/index.ts --outdir ../../builds/hypur-router --minify && bun run build:declaration",
     "build:declaration": "tsc --emitDeclarationOnly --project tsconfig.types.json"
   },
   "peerDependencies": {
