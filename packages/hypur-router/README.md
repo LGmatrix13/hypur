@@ -1,4 +1,4 @@
-# create-hypur
+# hypur-router
 
 To install dependencies:
 

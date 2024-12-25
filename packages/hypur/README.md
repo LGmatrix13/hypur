@@ -1,4 +1,4 @@
-# create-kent
+# hypur
 
 To install dependencies:
 

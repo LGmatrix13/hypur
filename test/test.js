@@ -1,4 +1,4 @@
-import { div, button, elements } from "./index.js";
+import { div, button, elements, onLoad } from "./index.js";
 
 function counter() {
   const counter = div("clicker", {

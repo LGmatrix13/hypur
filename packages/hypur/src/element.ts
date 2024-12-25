@@ -5,49 +5,49 @@ const stateStore = new WeakMap();
 export function p<TState extends Record<string, any>>(
   name: string,
   state?: TState
-): KentElement<TState> {
+): HypurElement<TState> {
   return elementByTag(name, state, "p");
 }
 
 export function button<TState extends Record<string, any>>(
   name: string,
   state?: TState
-): KentElement<TState> {
+): HypurElement<TState> {
   return elementByTag(name, state, "button");
 }
 
 export function section<TState extends Record<string, any>>(
   name: string,
   state?: TState
-): KentElement<TState> {
+): HypurElement<TState> {
   return elementByTag(name, state, "section");
 }
 
 export function h1<TState extends Record<string, any>>(
   name: string,
   state?: TState
-): KentElement<TState> {
+): HypurElement<TState> {
   return elementByTag(name, state, "h1");
 }
 
 export function h2<TState extends Record<string, any>>(
   name: string,
   state?: TState
-): KentElement<TState> {
+): HypurElement<TState> {
   return elementByTag(name, state, "h2");
 }
 
 export function h3<TState extends Record<string, any>>(
   name: string,
   state?: TState
-): KentElement<TState> {
+): HypurElement<TState> {
   return elementByTag(name, state, "h2");
 }
 
 export function div<TState extends Record<string, any>>(
   name: string,
   state?: TState
-): KentElement<TState> {
+): HypurElement<TState> {
   return elementByTag(name, state, "div");
 }
 
@@ -55,7 +55,7 @@ function elementByTag<TState extends Record<string, any>>(
   name: string,
   state?: TState,
   tagName?: string
-): KentElement<TState> {
+): HypurElement<TState> {
   const baseElement = document.querySelector(
     `${tagName}[kent="${name}"]`
   ) as HTMLElement;
@@ -64,23 +64,23 @@ function elementByTag<TState extends Record<string, any>>(
     throw new Error(`${tagName} HTMLElement element ${name} does not exist`);
   }
 
-  return new KentElement<TState>(name, baseElement, state);
+  return new HypurElement<TState>(name, baseElement, state);
 }
 
 export function element<TState extends Record<string, any>>(
   name: string,
   state?: TState
-): KentElement<TState> {
+): HypurElement<TState> {
   const baseElement = document.querySelector(`[kent="${name}"]`) as HTMLElement;
 
   if (!baseElement) {
     throw new Error(`HTMLElement ${name} does not exist`);
   }
 
-  return new KentElement<TState>(name, baseElement, state);
+  return new HypurElement<TState>(name, baseElement, state);
 }
 
-export class KentElement<TState extends Record<string, any>> {
+export class HypurElement<TState extends Record<string, any>> {
   name: string;
   baseElement: HTMLElement;
   bindState: boolean = false;
@@ -120,7 +120,7 @@ export class KentElement<TState extends Record<string, any>> {
     }
   }
 
-  setChildren(children: KentElement<any>) {
+  setChildren(children: HypurElement<any>) {
     this.baseElement.innerHTML = children.baseElement.innerHTML;
   }
 
@@ -135,38 +135,38 @@ export class KentElement<TState extends Record<string, any>> {
     return this;
   }
 
-  onClick(action: (element: KentElement<TState>, event?: MouseEvent) => void) {
+  onClick(action: (element: HypurElement<TState>, event?: MouseEvent) => void) {
     this.onEvent("click", action as Action<TState>);
   }
 
-  onChange(action: (element: KentElement<TState>, event?: Event) => void) {
+  onChange(action: (element: HypurElement<TState>, event?: Event) => void) {
     this.onEvent("change", action as Action<TState>);
   }
 
-  onInput(action: (element: KentElement<TState>, event?: InputEvent) => void) {
+  onInput(action: (element: HypurElement<TState>, event?: InputEvent) => void) {
     this.onEvent("input", action as Action<TState>);
   }
 
   onMouseOver(
-    action: (element: KentElement<TState>, event?: MouseEvent) => void
+    action: (element: HypurElement<TState>, event?: MouseEvent) => void
   ) {
     this.onEvent("mouseover", action as Action<TState>);
   }
 
   onMouseOut(
-    action: (element: KentElement<TState>, event?: MouseEvent) => void
+    action: (element: HypurElement<TState>, event?: MouseEvent) => void
   ) {
     this.onEvent("mouseout", action as Action<TState>);
   }
 
   onKeyDown(
-    action: (element: KentElement<TState>, event?: KeyboardEvent) => void
+    action: (element: HypurElement<TState>, event?: KeyboardEvent) => void
   ) {
     this.onEvent("keydown", action as Action<TState>);
   }
 
   onKeyUp(
-    action: (element: KentElement<TState>, event?: KeyboardEvent) => void
+    action: (element: HypurElement<TState>, event?: KeyboardEvent) => void
   ) {
     this.onEvent("keyup", action as Action<TState>);
   }

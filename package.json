@@ -1,6 +1,9 @@
 {
   "name": "hypur-packages",
   "private": true,
+  "scripts": {
+    "build": "cd ./packages/create-hypur && bun run build && cd ../../packages/hypur && bun run build && cd ../../packages/hypur-router && bun run build"
+  },
   "workspaces": [
     "packages/*"
   ]

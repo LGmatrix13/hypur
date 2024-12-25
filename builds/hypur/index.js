@@ -26,17 +26,17 @@ function elementByTag(name, state, tagName) {
   if (!baseElement) {
     throw new Error(`${tagName} HTMLElement element ${name} does not exist`);
   }
-  return new KentElement(name, baseElement, state);
+  return new HypurElement(name, baseElement, state);
 }
 function element(name, state) {
   const baseElement = document.querySelector(`[kent="${name}"]`);
   if (!baseElement) {
     throw new Error(`HTMLElement ${name} does not exist`);
   }
-  return new KentElement(name, baseElement, state);
+  return new HypurElement(name, baseElement, state);
 }
 
-class KentElement {
+class HypurElement {
   name;
   baseElement;
   bindState = false;
@@ -163,11 +163,11 @@ function elements(name, state) {
   if (!baseElements.length) {
     throw new Error(`Elements ${name} do not exist`);
   }
-  const elements2 = Array.from(baseElements).map((element2) => new KentElement(name, element2, state));
-  return new KentElements(elements2);
+  const elements2 = Array.from(baseElements).map((element2) => new HypurElement(name, element2, state));
+  return new HypurElements(elements2);
 }
 
-class KentElements extends Array {
+class HypurElements extends Array {
   constructor(elements2) {
     super();
     this.push(...elements2);
@@ -208,7 +208,7 @@ class KentElements extends Array {
   }
   append(...values) {
     const last = this[this.length - 1];
-    const clone = new KentElement(last.name, last.baseElement, last.state);
+    const clone = new HypurElement(last.name, last.baseElement, last.state);
     clone.spread(...values);
     this.append(clone);
   }
@@ -228,6 +228,6 @@ export {
   element,
   div,
   button,
-  KentElements,
-  KentElement
+  HypurElements,
+  HypurElement
 };

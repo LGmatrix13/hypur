@@ -1,6 +1,6 @@
-import type { KentElement } from "./element";
+import type { HypurElement } from "./element";
 
 export type Action<TState extends Record<string, any>> = (
-  element: KentElement<TState>,
+  element: HypurElement<TState>,
   event?: Event
 ) => void;

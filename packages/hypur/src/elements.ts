@@ -1,10 +1,10 @@
-import { KentElement } from "./element";
+import { HypurElement } from "./element";
 import type { Action } from "./types";
 
 export function elements<TState extends Record<string, any>>(
   name: string,
   state?: TState
-): KentElements<TState> {
+): HypurElements<TState> {
   const baseElements = document.querySelectorAll(`[kent="${name}"]`);
 
   if (!baseElements.length) {
@@ -12,16 +12,16 @@ export function elements<TState extends Record<string, any>>(
   }
 
   const elements = Array.from(baseElements).map(
-    (element) => new KentElement<TState>(name, element as HTMLElement, state)
+    (element) => new HypurElement<TState>(name, element as HTMLElement, state)
   );
 
-  return new KentElements<TState>(elements);
+  return new HypurElements<TState>(elements);
 }
 
-export class KentElements<TState extends Record<string, any>> extends Array<
-  KentElement<TState>
+export class HypurElements<TState extends Record<string, any>> extends Array<
+  HypurElement<TState>
 > {
-  constructor(elements: KentElement<TState>[]) {
+  constructor(elements: HypurElement<TState>[]) {
     super();
     this.push(...elements);
   }
@@ -47,45 +47,45 @@ export class KentElements<TState extends Record<string, any>> extends Array<
   /**
    * Helper methods for common events.
    */
-  onClick(action: (element: KentElement<TState>, event?: MouseEvent) => void) {
+  onClick(action: (element: HypurElement<TState>, event?: MouseEvent) => void) {
     this.onEvent("click", action as Action<TState>);
   }
 
-  onChange(action: (element: KentElement<TState>, event?: Event) => void) {
+  onChange(action: (element: HypurElement<TState>, event?: Event) => void) {
     this.onEvent("change", action as Action<TState>);
   }
 
-  onInput(action: (element: KentElement<TState>, event?: InputEvent) => void) {
+  onInput(action: (element: HypurElement<TState>, event?: InputEvent) => void) {
     this.onEvent("input", action as Action<TState>);
   }
 
   onMouseOver(
-    action: (element: KentElement<TState>, event?: MouseEvent) => void
+    action: (element: HypurElement<TState>, event?: MouseEvent) => void
   ) {
     this.onEvent("mouseover", action as Action<TState>);
   }
 
   onMouseOut(
-    action: (element: KentElement<TState>, event?: MouseEvent) => void
+    action: (element: HypurElement<TState>, event?: MouseEvent) => void
   ) {
     this.onEvent("mouseout", action as Action<TState>);
   }
 
   onKeyDown(
-    action: (element: KentElement<TState>, event?: KeyboardEvent) => void
+    action: (element: HypurElement<TState>, event?: KeyboardEvent) => void
   ) {
     this.onEvent("keydown", action as Action<TState>);
   }
 
   onKeyUp(
-    action: (element: KentElement<TState>, event?: KeyboardEvent) => void
+    action: (element: HypurElement<TState>, event?: KeyboardEvent) => void
   ) {
     this.onEvent("keyup", action as Action<TState>);
   }
 
   append(...values: any) {
     const last = this[this.length - 1];
-    const clone = new KentElement(last.name, last.baseElement, last.state);
+    const clone = new HypurElement(last.name, last.baseElement, last.state);
     clone.spread(...values);
     this.append(clone);
   }
