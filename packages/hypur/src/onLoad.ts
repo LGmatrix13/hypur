@@ -1,3 +1,3 @@
-export function onMount(logic: () => void) {
+export function onLoad(logic: () => void) {
   document.addEventListener("DOMContentLoaded", logic);
 }

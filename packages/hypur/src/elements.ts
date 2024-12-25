@@ -12,7 +12,7 @@ export function elements<TState extends Record<string, any>>(
   }
 
   const elements = Array.from(baseElements).map(
-    (element) => new KentElement<TState>(element as HTMLElement, state)
+    (element) => new KentElement<TState>(name, element as HTMLElement, state)
   );
 
   return new KentElements<TState>(elements);
@@ -35,6 +35,13 @@ export class KentElements<TState extends Record<string, any>> extends Array<
         action(element, event);
       });
     });
+  }
+
+  bind() {
+    this.forEach((element) => {
+      element.bind();
+    });
+    return this;
   }
 
   /**
@@ -78,7 +85,7 @@ export class KentElements<TState extends Record<string, any>> extends Array<
 
   append(...values: any) {
     const last = this[this.length - 1];
-    const clone = new KentElement(last.baseElement, last.state);
+    const clone = new KentElement(last.name, last.baseElement, last.state);
     clone.spread(...values);
     this.append(clone);
   }

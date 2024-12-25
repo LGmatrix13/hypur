@@ -1,55 +1,57 @@
 import type { Action } from "./types";
 
+const stateStore = new WeakMap();
+
 export function p<TState extends Record<string, any>>(
   name: string,
   state?: TState
 ): KentElement<TState> {
-  return element(name, state, "p");
+  return elementByTag(name, state, "p");
 }
 
 export function button<TState extends Record<string, any>>(
   name: string,
   state?: TState
 ): KentElement<TState> {
-  return element(name, state, "button");
+  return elementByTag(name, state, "button");
 }
 
 export function section<TState extends Record<string, any>>(
   name: string,
   state?: TState
 ): KentElement<TState> {
-  return element(name, state, "section");
+  return elementByTag(name, state, "section");
 }
 
 export function h1<TState extends Record<string, any>>(
   name: string,
   state?: TState
 ): KentElement<TState> {
-  return element(name, state, "h1");
+  return elementByTag(name, state, "h1");
 }
 
 export function h2<TState extends Record<string, any>>(
   name: string,
   state?: TState
 ): KentElement<TState> {
-  return element(name, state, "h2");
+  return elementByTag(name, state, "h2");
 }
 
 export function h3<TState extends Record<string, any>>(
   name: string,
   state?: TState
 ): KentElement<TState> {
-  return element(name, state, "h2");
+  return elementByTag(name, state, "h2");
 }
 
 export function div<TState extends Record<string, any>>(
   name: string,
   state?: TState
 ): KentElement<TState> {
-  return element(name, state, "div");
+  return elementByTag(name, state, "div");
 }
 
-export function element<TState extends Record<string, any>>(
+function elementByTag<TState extends Record<string, any>>(
   name: string,
   state?: TState,
   tagName?: string
@@ -59,19 +61,37 @@ export function element<TState extends Record<string, any>>(
   ) as HTMLElement;
 
   if (!baseElement) {
-    throw new Error(`${tagName} element ${name} does not exist`);
+    throw new Error(`${tagName} HTMLElement element ${name} does not exist`);
   }
 
-  return new KentElement<TState>(baseElement, state);
+  return new KentElement<TState>(name, baseElement, state);
+}
+
+export function element<TState extends Record<string, any>>(
+  name: string,
+  state?: TState
+): KentElement<TState> {
+  const baseElement = document.querySelector(`[kent="${name}"]`) as HTMLElement;
+
+  if (!baseElement) {
+    throw new Error(`HTMLElement ${name} does not exist`);
+  }
+
+  return new KentElement<TState>(name, baseElement, state);
 }
 
 export class KentElement<TState extends Record<string, any>> {
+  name: string;
   baseElement: HTMLElement;
   bindState: boolean = false;
+  key?: number;
 
-  constructor(baseElement: HTMLElement, state?: TState) {
+  constructor(name: string, baseElement: HTMLElement, state?: TState) {
+    this.name = name;
     this.baseElement = baseElement;
-    baseElement.dataset["state"] = JSON.stringify(state);
+    const key = this.baseElement.dataset.key;
+    if (key) this.key = Number(key);
+    stateStore.set(this.baseElement, state);
   }
 
   get element() {
@@ -79,7 +99,7 @@ export class KentElement<TState extends Record<string, any>> {
   }
 
   get state() {
-    return JSON.parse(this.baseElement.dataset.state as string) as TState;
+    return stateStore.get(this.baseElement);
   }
 
   setState(callback: (prev: TState) => TState) {
@@ -87,13 +107,15 @@ export class KentElement<TState extends Record<string, any>> {
   }
 
   private set state(newState: TState) {
-    this.baseElement.dataset.state = JSON.stringify(newState);
+    stateStore.set(this.baseElement, newState);
     if (this.bindState) {
       Object.keys(newState).forEach((key) => {
         const child = this.baseElement.querySelector(
           `[kent="${key}"]`
         ) as HTMLElement;
-        child.innerText = newState[key] && newState[key];
+        if (child !== null) {
+          child.innerText = newState[key] && newState[key];
+        }
       });
     }
   }
@@ -110,6 +132,7 @@ export class KentElement<TState extends Record<string, any>> {
 
   bind() {
     this.bindState = true;
+    return this;
   }
 
   onClick(action: (element: KentElement<TState>, event?: MouseEvent) => void) {
@@ -152,6 +175,14 @@ export class KentElement<TState extends Record<string, any>> {
     this.baseElement.childNodes.forEach((child, index) => {
       child.textContent = values[index];
     });
+  }
+
+  get parent() {
+    const parent = this.baseElement.parentElement;
+    if (!parent) {
+      throw new Error(`KentElement ${this.name} does not have parent`);
+    }
+    return parent;
   }
 
   duplicate() {

@@ -1,55 +1,71 @@
 // src/element.ts
+var stateStore = new WeakMap;
 function p(name, state) {
-  return element(name, state, "p");
+  return elementByTag(name, state, "p");
 }
 function button(name, state) {
-  return element(name, state, "button");
+  return elementByTag(name, state, "button");
 }
 function section(name, state) {
-  return element(name, state, "section");
+  return elementByTag(name, state, "section");
 }
 function h1(name, state) {
-  return element(name, state, "h1");
+  return elementByTag(name, state, "h1");
 }
 function h2(name, state) {
-  return element(name, state, "h2");
+  return elementByTag(name, state, "h2");
 }
 function h3(name, state) {
-  return element(name, state, "h2");
+  return elementByTag(name, state, "h2");
 }
 function div(name, state) {
-  return element(name, state, "div");
+  return elementByTag(name, state, "div");
 }
-function element(name, state, tagName) {
+function elementByTag(name, state, tagName) {
   const baseElement = document.querySelector(`${tagName}[kent="${name}"]`);
   if (!baseElement) {
-    throw new Error(`${tagName} element ${name} does not exist`);
+    throw new Error(`${tagName} HTMLElement element ${name} does not exist`);
   }
-  return new KentElement(baseElement, state);
+  return new KentElement(name, baseElement, state);
+}
+function element(name, state) {
+  const baseElement = document.querySelector(`[kent="${name}"]`);
+  if (!baseElement) {
+    throw new Error(`HTMLElement ${name} does not exist`);
+  }
+  return new KentElement(name, baseElement, state);
 }
 
 class KentElement {
+  name;
   baseElement;
   bindState = false;
-  constructor(baseElement, state) {
+  key;
+  constructor(name, baseElement, state) {
+    this.name = name;
     this.baseElement = baseElement;
-    baseElement.dataset["state"] = JSON.stringify(state);
+    const key = this.baseElement.dataset.key;
+    if (key)
+      this.key = Number(key);
+    stateStore.set(this.baseElement, state);
   }
   get element() {
     return this.baseElement;
   }
   get state() {
-    return JSON.parse(this.baseElement.dataset.state);
+    return stateStore.get(this.baseElement);
   }
   setState(callback) {
     this.state = { ...this.state, ...callback(this.state) };
   }
   set state(newState) {
-    this.baseElement.dataset.state = JSON.stringify(newState);
+    stateStore.set(this.baseElement, newState);
     if (this.bindState) {
       Object.keys(newState).forEach((key) => {
         const child = this.baseElement.querySelector(`[kent="${key}"]`);
-        child.innerText = newState[key] && newState[key];
+        if (child !== null) {
+          child.innerText = newState[key] && newState[key];
+        }
       });
     }
   }
@@ -63,6 +79,7 @@ class KentElement {
   }
   bind() {
     this.bindState = true;
+    return this;
   }
   onClick(action) {
     this.onEvent("click", action);
@@ -89,6 +106,13 @@ class KentElement {
     this.baseElement.childNodes.forEach((child, index) => {
       child.textContent = values[index];
     });
+  }
+  get parent() {
+    const parent = this.baseElement.parentElement;
+    if (!parent) {
+      throw new Error(`KentElement ${this.name} does not have parent`);
+    }
+    return parent;
   }
   duplicate() {
     const clone = this.baseElement.cloneNode(true);
@@ -139,7 +163,7 @@ function elements(name, state) {
   if (!baseElements.length) {
     throw new Error(`Elements ${name} do not exist`);
   }
-  const elements2 = Array.from(baseElements).map((element2) => new KentElement(element2, state));
+  const elements2 = Array.from(baseElements).map((element2) => new KentElement(name, element2, state));
   return new KentElements(elements2);
 }
 
@@ -154,6 +178,12 @@ class KentElements extends Array {
         action(element2, event);
       });
     });
+  }
+  bind() {
+    this.forEach((element2) => {
+      element2.bind();
+    });
+    return this;
   }
   onClick(action) {
     this.onEvent("click", action);
@@ -178,19 +208,19 @@ class KentElements extends Array {
   }
   append(...values) {
     const last = this[this.length - 1];
-    const clone = new KentElement(last.baseElement, last.state);
+    const clone = new KentElement(last.name, last.baseElement, last.state);
     clone.spread(...values);
     this.append(clone);
   }
 }
-// src/onMount.ts
-function onMount(logic) {
+// src/onLoad.ts
+function onLoad(logic) {
   document.addEventListener("DOMContentLoaded", logic);
 }
 export {
   section,
   p,
-  onMount,
+  onLoad,
   h3,
   h2,
   h1,
