@@ -1,18 +1,18 @@
 import { KentElement } from "./element";
 import type { Action } from "./types";
 
-export function elements<TState extends Record<string, any>>(args: {
-  className: string;
-}): KentElements<TState> {
-  const { className } = args;
-  const baseElements = document.getElementsByClassName(className);
+export function elements<TState extends Record<string, any>>(
+  name: string,
+  state?: TState
+): KentElements<TState> {
+  const baseElements = document.querySelectorAll(`[kent="${name}"]`);
 
   if (!baseElements.length) {
-    throw new Error(`Elements with class ${className} does not exist`);
+    throw new Error(`Elements ${name} do not exist`);
   }
 
   const elements = Array.from(baseElements).map(
-    (element) => new KentElement<TState>(element as HTMLElement)
+    (element) => new KentElement<TState>(element as HTMLElement, state)
   );
 
   return new KentElements<TState>(elements);
@@ -31,7 +31,7 @@ export class KentElements<TState extends Record<string, any>> extends Array<
    */
   onEvent(eventType: string, action: Action<TState>) {
     this.forEach((element) => {
-      element.addEventListener(eventType, (event) => {
+      element.baseElement.addEventListener(eventType, (event) => {
         action(element, event);
       });
     });
@@ -78,7 +78,7 @@ export class KentElements<TState extends Record<string, any>> extends Array<
 
   append(...values: any) {
     const last = this[this.length - 1];
-    const clone = new KentElement(last, last.state);
+    const clone = new KentElement(last.baseElement, last.state);
     clone.spread(...values);
     this.append(clone);
   }

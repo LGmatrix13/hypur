@@ -1,4 +1,4 @@
-import { element } from "../../kent/build";
+import { element } from "../../..";
 
 const button = element({
   id: "button",

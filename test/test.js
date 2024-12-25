@@ -94,7 +94,9 @@ class KentElement {
     const clone = this.baseElement.cloneNode(true);
     const parent = this.baseElement.parentNode;
     if (!parent) {
-      throw new Error(`KentElement with id ${this.baseElement.id} does not have parent to run duplicate`);
+      throw new Error(
+        `KentElement with id ${this.baseElement.id} does not have parent to run duplicate`
+      );
     }
     this.baseElement.parentNode?.appendChild(clone);
   }
@@ -104,7 +106,7 @@ class KentElement {
   async fetcher(url, method) {
     const data = await fetch(url, {
       method,
-      body: this.baseElement.dataset.state
+      body: this.baseElement.dataset.state,
     });
     return data;
   }
@@ -139,7 +141,9 @@ function elements(name, state) {
   if (!baseElements.length) {
     throw new Error(`Elements ${name} do not exist`);
   }
-  const elements2 = Array.from(baseElements).map((element2) => new KentElement(element2, state));
+  const elements2 = Array.from(baseElements).map(
+    (element2) => new KentElement(element2, state)
+  );
   return new KentElements(elements2);
 }
 
@@ -199,5 +203,37 @@ export {
   div,
   button,
   KentElements,
-  KentElement
+  KentElement,
 };
+
+onMount(() => {
+  const counter = div("clicker", {
+    count: 0,
+    message: "",
+  });
+
+  const btn = button("count");
+  counter.bind();
+
+  btn.onClick(() => {
+    counter.setState((prev) => ({
+      message: `Clicked ${prev.count + 1}`,
+      count: prev.count + 1,
+    }));
+  });
+
+  const likeButtons = elements("like-button", {
+    liked: false,
+  });
+
+  likeButtons.onClick((self) => {
+    self.setState((prev) => ({
+      liked: !prev.liked,
+    }));
+    if (self.state.liked) {
+      self.element.innerText = "Like?";
+    } else {
+      self.element.innerText = "Liked!";
+    }
+  });
+});
