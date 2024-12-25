@@ -13,6 +13,7 @@ async function seedDirectory(directory: string) {
 
   if (fs.existsSync(directoryPath)) {
     spinner.error({ text: `The directory ${directoryPath} already exists` });
+    process.exit(1);
   } else {
     try {
       fs.mkdirSync(directoryPath, { recursive: true });
@@ -23,7 +24,6 @@ async function seedDirectory(directory: string) {
       spinner.error(`Failed to add kent to "${directoryPath}"`);
       console.error((error as Error).message);
       process.exit(1);
-      return;
     }
   }
 }
@@ -51,7 +51,6 @@ async function seedStarter(directory: string) {
 }
 
 export async function configuration() {
-  console.log();
   const directory = await input({
     message: "What directory would you like kent to live?",
   });

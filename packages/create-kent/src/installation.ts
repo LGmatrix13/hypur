@@ -7,12 +7,9 @@ export async function installation() {
   await sleep(500);
   exec("echo npm install kent", (error) => {
     if (error !== null) {
-      spinner.reset();
       spinner.error({ text: "Failed to install kent" });
       process.exit(1);
-    } else {
-      spinner.reset();
-      spinner.success({ text: "kent installed" });
     }
   });
+  spinner.success({ text: "Kent installed!" });
 }
