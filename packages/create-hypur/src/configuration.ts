@@ -6,7 +6,7 @@ import path from "node:path";
 import { sleep } from "./sleep";
 
 async function seedDirectory(directory: string) {
-  const spinner = createSpinner("Adding kent...").start();
+  const spinner = createSpinner("Adding hypur...").start();
   await sleep(200);
 
   const directoryPath = path.resolve(process.cwd(), directory);
@@ -18,10 +18,10 @@ async function seedDirectory(directory: string) {
     try {
       fs.mkdirSync(directoryPath, { recursive: true });
       spinner.success({
-        text: `kent is now chilling in ${directoryPath}!`,
+        text: `hypur is now chilling in ${directoryPath}!`,
       });
     } catch (error) {
-      spinner.error(`Failed to add kent to "${directoryPath}"`);
+      spinner.error(`Failed to add hypur to "${directoryPath}"`);
       console.error((error as Error).message);
       process.exit(1);
     }
@@ -52,7 +52,7 @@ async function seedStarter(directory: string) {
 
 export async function configuration() {
   const directory = await input({
-    message: "What directory would you like kent to live?",
+    message: "What directory would you like hypur to live?",
   });
   await seedDirectory(directory);
   const starter = await confirm({

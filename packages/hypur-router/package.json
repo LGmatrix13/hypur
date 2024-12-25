@@ -1,5 +1,5 @@
 {
-  "name": "create-kent",
+  "name": "create-hypur",
   "module": "index.ts",
   "devDependencies": {
     "@types/bun": "latest"

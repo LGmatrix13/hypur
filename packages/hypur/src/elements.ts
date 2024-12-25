@@ -5,7 +5,7 @@ export function elements<TState extends Record<string, any>>(
   name: string,
   state?: TState
 ): HypurElements<TState> {
-  const baseElements = document.querySelectorAll(`[kent="${name}"]`);
+  const baseElements = document.querySelectorAll(`[hypur="${name}"]`);
 
   if (!baseElements.length) {
     throw new Error(`Elements ${name} do not exist`);

@@ -1,5 +1,5 @@
 {
-  "name": "create-kent",
+  "name": "create-hypurs",
   "module": "index.ts",
   "devDependencies": {
     "@types/bun": "latest"
@@ -16,6 +16,6 @@
     "nanospinner": "^1.2.2"
   },
   "bin": {
-    "create-kent": "./build/index.js"
+    "create-hypur": "./build/index.js"
   }
 }

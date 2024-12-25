@@ -57,7 +57,7 @@ function elementByTag<TState extends Record<string, any>>(
   tagName?: string
 ): HypurElement<TState> {
   const baseElement = document.querySelector(
-    `${tagName}[kent="${name}"]`
+    `${tagName}[hypur="${name}"]`
   ) as HTMLElement;
 
   if (!baseElement) {
@@ -71,7 +71,9 @@ export function element<TState extends Record<string, any>>(
   name: string,
   state?: TState
 ): HypurElement<TState> {
-  const baseElement = document.querySelector(`[kent="${name}"]`) as HTMLElement;
+  const baseElement = document.querySelector(
+    `[hypur="${name}"]`
+  ) as HTMLElement;
 
   if (!baseElement) {
     throw new Error(`HTMLElement ${name} does not exist`);
@@ -111,7 +113,7 @@ export class HypurElement<TState extends Record<string, any>> {
     if (this.bindState) {
       Object.keys(newState).forEach((key) => {
         const child = this.baseElement.querySelector(
-          `[kent="${key}"]`
+          `[hypur="${key}"]`
         ) as HTMLElement;
         if (child !== null) {
           child.innerText = newState[key] && newState[key];
@@ -180,7 +182,7 @@ export class HypurElement<TState extends Record<string, any>> {
   get parent() {
     const parent = this.baseElement.parentElement;
     if (!parent) {
-      throw new Error(`KentElement ${this.name} does not have parent`);
+      throw new Error(`HypurElement ${this.name} does not have parent`);
     }
     return parent;
   }
@@ -190,7 +192,7 @@ export class HypurElement<TState extends Record<string, any>> {
     const parent = this.baseElement.parentNode;
     if (!parent) {
       throw new Error(
-        `KentElement with id ${this.baseElement.id} does not have parent to run duplicate`
+        `HypurElement with id ${this.baseElement.id} does not have parent to run duplicate`
       );
     }
     this.baseElement.parentNode?.appendChild(clone);

@@ -2969,7 +2969,7 @@ var sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 // src/configuration.ts
 async function seedDirectory(directory) {
-  const spinner = import_nanospinner.createSpinner("Adding kent...").start();
+  const spinner = import_nanospinner.createSpinner("Adding hypur...").start();
   await sleep(200);
   const directoryPath = path.resolve(process.cwd(), directory);
   if (fs.existsSync(directoryPath)) {
@@ -2979,10 +2979,10 @@ async function seedDirectory(directory) {
     try {
       fs.mkdirSync(directoryPath, { recursive: true });
       spinner.success({
-        text: `kent is now chilling in ${directoryPath}!`
+        text: `hypur is now chilling in ${directoryPath}!`
       });
     } catch (error) {
-      spinner.error(`Failed to add kent to "${directoryPath}"`);
+      spinner.error(`Failed to add hypur to "${directoryPath}"`);
       console.error(error.message);
       process.exit(1);
     }
@@ -3010,7 +3010,7 @@ async function seedStarter(directory) {
 }
 async function configuration() {
   const directory = await esm_default3({
-    message: "What directory would you like kent to live?"
+    message: "What directory would you like hypur to live?"
   });
   await seedDirectory(directory);
   const starter = await esm_default2({
@@ -3025,20 +3025,20 @@ async function configuration() {
 var import_nanospinner2 = __toESM(require_dist(), 1);
 import { exec } from "child_process";
 async function installation() {
-  const spinner = import_nanospinner2.createSpinner("Installing kent...").start();
+  const spinner = import_nanospinner2.createSpinner("Installing hypur...").start();
   await sleep(500);
-  exec("echo npm install kent", (error) => {
+  exec("echo npm install @hypur/runtime", (error) => {
     if (error !== null) {
-      spinner.error({ text: "Failed to install kent" });
+      spinner.error({ text: "Failed to install hypur" });
       process.exit(1);
     }
   });
-  spinner.success({ text: "Kent installed!" });
+  spinner.success({ text: "Hypur installed!" });
 }
 
 // src/welcome.ts
 function welcome() {
-  console.log("\x1B[37m", "kent v1.0.0");
+  console.log("\x1B[37m", "hypur v1.0.0");
 }
 
 // src/index.ts

@@ -22,14 +22,14 @@ function div(name, state) {
   return elementByTag(name, state, "div");
 }
 function elementByTag(name, state, tagName) {
-  const baseElement = document.querySelector(`${tagName}[kent="${name}"]`);
+  const baseElement = document.querySelector(`${tagName}[hypur="${name}"]`);
   if (!baseElement) {
     throw new Error(`${tagName} HTMLElement element ${name} does not exist`);
   }
   return new HypurElement(name, baseElement, state);
 }
 function element(name, state) {
-  const baseElement = document.querySelector(`[kent="${name}"]`);
+  const baseElement = document.querySelector(`[hypur="${name}"]`);
   if (!baseElement) {
     throw new Error(`HTMLElement ${name} does not exist`);
   }
@@ -61,7 +61,7 @@ class HypurElement {
     stateStore.set(this.baseElement, newState);
     if (this.bindState) {
       Object.keys(newState).forEach((key) => {
-        const child = this.baseElement.querySelector(`[kent="${key}"]`);
+        const child = this.baseElement.querySelector(`[hypur="${key}"]`);
         if (child !== null) {
           child.innerText = newState[key] && newState[key];
         }
@@ -109,7 +109,7 @@ class HypurElement {
   get parent() {
     const parent = this.baseElement.parentElement;
     if (!parent) {
-      throw new Error(`KentElement ${this.name} does not have parent`);
+      throw new Error(`HypurElement ${this.name} does not have parent`);
     }
     return parent;
   }
@@ -118,7 +118,7 @@ class HypurElement {
     const parent = this.baseElement.parentNode;
     if (!parent) {
       throw new Error(
-        `KentElement with id ${this.baseElement.id} does not have parent to run duplicate`
+        `HypurElement with id ${this.baseElement.id} does not have parent to run duplicate`
       );
     }
     this.baseElement.parentNode?.appendChild(clone);
@@ -160,7 +160,7 @@ class HypurElement {
 }
 // src/elements.ts
 function elements(name, state) {
-  const baseElements = document.querySelectorAll(`[kent="${name}"]`);
+  const baseElements = document.querySelectorAll(`[hypur="${name}"]`);
   if (!baseElements.length) {
     throw new Error(`Elements ${name} do not exist`);
   }
