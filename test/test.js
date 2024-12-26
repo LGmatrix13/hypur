@@ -1,40 +1,38 @@
-import { div, button, elements, onLoad } from "./index.js";
-
-function counter() {
-  const counter = div("clicker", {
-    count: 0,
-    message: "",
-  }).bind();
-  const count = button("count");
-
-  count.onClick(() => {
-    counter.setState((prev) => ({
-      message: `Clicked ${prev.count + 1}`,
-      count: prev.count + 1,
-    }));
-  });
-}
-
-function likeButtons() {
-  const likeButtons = elements("likeButton", {
-    liked: false,
-    likeButtonTitle: "Like?",
-  }).bind();
-  const likeButtonRemove = elements("likeButtonRemove");
-
-  likeButtons.onClick((self) => {
-    self.setState((prev) => ({
-      liked: !prev.liked,
-      likeButtonTitle: prev.liked ? "Like?" : "Liked!",
-    }));
-  });
-
-  likeButtonRemove.onClick((self) => {
-    self.parent.remove();
-  });
-}
+import { button, p } from "./element.js";
+import { onLoad, append } from "./hypur/index.js";
 
 onLoad(() => {
-  counter();
-  likeButtons();
+  const search = input("search", {
+    searchTerm: "",
+  });
+  const searchTerm = p("searchTerm", {
+    clicked: 0,
+  });
+  const card = div("card");
+  const addButton = button("addButton");
+
+  function handleSearch(self, event) {
+    search.setState(() => ({
+      searchTerm: event.target.value,
+    }));
+    self.value = search.state.searchTerm;
+    searchTerm.element.innerText = search.state.searchTerm;
+  }
+
+  function handleAddButton() {
+    append(card, searchTerm, (self) => {
+      self.element.innerText = "Test";
+    });
+  }
+
+  function handleSearchTerm(self) {
+    self.setState((prev) => ({
+      clicked: prev.clicked + 1,
+    }));
+    alert(`clicked ${self.state.clicked}`);
+  }
+
+  search.onEvent("input", handleSearch);
+  addButton.onClick(handleAddButton);
+  searchTerm.onClick(handleSearchTerm);
 });

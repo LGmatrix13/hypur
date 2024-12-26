@@ -4,8 +4,8 @@
     "noEmit": false,
     "emitDeclarationOnly": true,
     "declaration": true,
-    "outDir": "../../builds/hypur",
+    "outDir": "../../builds/router",
     "rootDir": "./src"
   },
-  "include": ["src/**/*.ts"]
+  "include": ["src/index.ts"]
 }

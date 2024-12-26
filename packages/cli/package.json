@@ -1,11 +1,11 @@
 {
-  "name": "create-hypurs",
+  "name": "@hypur/cli",
   "module": "index.ts",
   "devDependencies": {
     "@types/bun": "latest"
   },
   "scripts": {
-    "build": "bun build ./src/index.ts --outdir ../../builds/create-hypur --target=node --minify"
+    "build": "bun build ./src/index.ts --outdir ../../builds/cli --target=node --minify"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
