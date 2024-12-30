@@ -22,10 +22,10 @@ export declare class Grain<TState extends Record<string, any> = Record<string, a
     onKeyDown(action: Action<KeyboardEvent, TState>): this;
     onKeyUp(action: Action<KeyboardEvent, TState>): this;
     private fetcher;
-    delete(url: URL, logic?: (data: Response) => void | Promise<void>): Promise<void>;
-    put(url: URL, logic?: (data: Response) => void | Promise<void>): Promise<void>;
-    post(url: URL, logic?: (data: Response) => void | Promise<void>): Promise<void>;
-    get(url: URL, logic?: (data: Response) => void | Promise<void>): Promise<void>;
-    hypermedia(url: URL, logic?: (text: string) => void | Promise<void>): Promise<void>;
+    delete(url: string, logic?: (data: Response) => void | Promise<void>): Promise<void>;
+    put(url: string, logic?: (data: Response) => void | Promise<void>): Promise<void>;
+    post(url: string, logic?: (data: Response) => void | Promise<void>): Promise<void>;
+    get(url: string, logic?: (data: Response) => void | Promise<void>): Promise<void>;
+    hypermedia(url: string, method: "GET" | "POST" | "DELETE" | "PUT" | "PATCH", logic?: (text: string) => void | Promise<void>): Promise<void>;
     handle(): Promise<void> | void;
 }

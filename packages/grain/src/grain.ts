@@ -12,7 +12,7 @@ export class Grain<TState extends Record<string, any> = Record<string, any>> {
   constructor(name: string, state?: TState, base?: HTMLElement) {
     this.name = name;
     const baseElement =
-      base || (document.querySelector(`[hypur="${name}"]`) as HTMLElement);
+      base || (document.querySelector(`[grain="${name}"]`) as HTMLElement);
 
     if (!baseElement) {
       throw new Error(`HTMLElement ${name} does not exist`);
@@ -134,9 +134,10 @@ export class Grain<TState extends Record<string, any> = Record<string, any>> {
 
   async hypermedia(
     url: string,
+    method: "GET" | "POST" | "DELETE" | "PUT" | "PATCH",
     logic?: (text: string) => void | Promise<void>
   ) {
-    const data = await this.fetcher(url, "GET");
+    const data = await this.fetcher(url, method);
     const text = await data.text();
     if (logic) {
       await Promise.resolve(logic(text));
