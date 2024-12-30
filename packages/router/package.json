@@ -1,5 +1,5 @@
 {
-  "name": "@hypur/runtime",
+  "name": "@hypur/grain",
   "module": "index.ts",
   "devDependencies": {
     "@types/bun": "latest"

@@ -11,25 +11,26 @@ onLoad(() => {
   const card = div("card");
   const addButton = button("addButton");
 
-  function handleSearch(self, event) {
+  function handleSearch(element, event) {
     search.setState(() => ({
       searchTerm: event.target.value,
     }));
-    self.value = search.state.searchTerm;
-    searchTerm.element.innerText = search.state.searchTerm;
+
+    element.base.value = search.state.searchTerm;
+    searchTerm.innerText(search.state.searchTerm);
   }
 
   function handleAddButton() {
-    append(card, searchTerm, (self) => {
-      self.element.innerText = "Test";
+    append(card, searchTerm, (element) => {
+      element.innerText("Test");
     });
   }
 
-  function handleSearchTerm(self) {
-    self.setState((prev) => ({
+  function handleSearchTerm(element) {
+    element.setState((prev) => ({
       clicked: prev.clicked + 1,
     }));
-    alert(`clicked ${self.state.clicked}`);
+    alert(`clicked ${element.state.clicked}`);
   }
 
   search.onEvent("input", handleSearch);

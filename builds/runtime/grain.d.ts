@@ -1,0 +1,31 @@
+import type { Action, Listeners } from "./types";
+export declare const stateStore: WeakMap<WeakKey, any>;
+export declare class Grain<TState extends Record<string, any> = Record<string, any>> {
+    name: string;
+    base: HTMLElement;
+    listeners: Listeners<TState>;
+    defaultState?: TState;
+    constructor(name: string, state?: TState, base?: HTMLElement);
+    get state(): TState;
+    setState(callback: (prev: TState) => TState): void;
+    resetState(): void;
+    private set state(value);
+    innerText(value: string): void;
+    innerHTML(value: string): void;
+    outerHTML(value: string): void;
+    onEvent(eventType: string, action: Action<Event, TState>): this;
+    onClick(action: Action<MouseEvent, TState>): this;
+    onChange(action: Action<Event, TState>): this;
+    onInput(action: Action<InputEvent, TState>): this;
+    onMouseOver(action: Action<MouseEvent, TState>): this;
+    onMouseOut(action: Action<MouseEvent, TState>): this;
+    onKeyDown(action: Action<KeyboardEvent, TState>): this;
+    onKeyUp(action: Action<KeyboardEvent, TState>): this;
+    private fetcher;
+    delete(url: string, logic?: (data: Response) => void | Promise<void>): Promise<void>;
+    put(url: string, logic?: (data: Response) => void | Promise<void>): Promise<void>;
+    post(url: string, logic?: (data: Response) => void | Promise<void>): Promise<void>;
+    get(url: string, logic?: (data: Response) => void | Promise<void>): Promise<void>;
+    hypermedia(url: string, logic?: (text: string) => void | Promise<void>): Promise<void>;
+    handle(): Promise<void> | void;
+}

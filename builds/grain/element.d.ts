@@ -12,7 +12,7 @@ export declare function select<TState extends Record<string, any>>(name: string,
 export declare function element<TState extends Record<string, any>>(name: string, state?: TState): HypurElement<TState>;
 export declare class HypurElement<TState extends Record<string, any>> {
     name: string;
-    element: HTMLElement;
+    base: HTMLElement;
     listeners: {
         eventType: string;
         action: Action<Event, TState>;
@@ -23,6 +23,9 @@ export declare class HypurElement<TState extends Record<string, any>> {
     setState(callback: (prev: TState) => TState): void;
     resetState(): void;
     private set state(value);
+    innerText(value: string): void;
+    innerHTML(value: string): void;
+    outerHTML(value: string): void;
     onEvent(eventType: string, action: Action<Event, TState>): this;
     onClick(action: Action<MouseEvent, TState>): this;
     onChange(action: Action<Event, TState>): this;
@@ -36,4 +39,5 @@ export declare class HypurElement<TState extends Record<string, any>> {
     put(url: URL, logic?: (data: Response) => void | Promise<void>): Promise<void>;
     post(url: URL, logic?: (data: Response) => void | Promise<void>): Promise<void>;
     get(url: URL, logic?: (data: Response) => void | Promise<void>): Promise<void>;
+    hypermedia(url: URL, logic?: (text: string) => void | Promise<void>): Promise<void>;
 }

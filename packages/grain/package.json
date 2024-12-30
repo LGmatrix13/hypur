@@ -1,12 +1,12 @@
 {
-  "name": "@hypur/runtime",
+  "name": "@hypur/grain",
   "module": "index.ts",
   "type": "module",
   "devDependencies": {
     "@types/bun": "latest"
   },
   "scripts": {
-    "build": "bun build ./src/index.ts --outdir ../../builds/runtime --minify && bun run build:declaration",
+    "build": "bun build ./src/index.ts --outdir ../../builds/grain --minify && bun run build:declaration",
     "build:declaration": "tsc --emitDeclarationOnly --project tsconfig.types.json"
   },
   "peerDependencies": {
