@@ -14,16 +14,6 @@ export class ReactiveGrain<
     this.state = this.defaultState;
   }
 
-  seedState() {
-    const seedState = this.getAttribute("grain-state");
-    if (!seedState) {
-      throw new Error(
-        `Grain could not seed state. Make sure The "grain-state" attribute is set.`
-      );
-    }
-    this.state = JSON.parse(seedState) as TState;
-  }
-
   async delete(url: string, logic?: (data: Response) => void | Promise<void>) {
     await Sow.delete(url, this.state, logic);
   }
