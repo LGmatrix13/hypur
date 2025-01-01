@@ -1,6 +1,6 @@
 # Creating a Reactive Grain
 
-This builds off of the [Creating a Grain]() tutorial. Recall the `ButtonGrain` we created:
+This builds off of the [Creating a Grain]("/creating-a-grain.md") tutorial. Recall the `ButtonGrain` we created:
 
 ```html
 <div>
@@ -86,7 +86,7 @@ That's nice, but we probably want to reflect state updates on our UI. Let's upda
 </div>
 ```
 
-Now, we can use `Sow` to locate `click-count` and update its contents. Read [Locating Elements] to learn more about `Sow`:
+Now, we can use `Sow` to locate `click-count` and update its contents. Read [Locating Elements]("/locating-elements.md") to learn more about `Sow`:
 
 ```ts
 interface IButtonGrainState {
