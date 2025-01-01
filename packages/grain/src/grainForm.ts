@@ -2,26 +2,23 @@ import { loading } from "./loading";
 
 export class GrainForm<
   FData extends Record<string, any> = Record<string, any>
-> {
-  base: HTMLFormElement;
-
-  constructor(name: string) {
-    const baseElement = document.querySelector(`form[grain=${name}]`);
-    if (baseElement === null) {
-      throw new Error(`GrainForm of name ${name} does not exist`);
-    }
-    this.base = baseElement as HTMLFormElement;
-    this.base.addEventListener("submit", async (event) => {
+> extends HTMLFormElement {
+  constructor() {
+    super();
+    this.addEventListener("submit", async (event) => {
       event.preventDefault();
-      const method = this.base.getAttribute("method") as string;
-      const action = this.base.getAttribute("action") as string;
-      const formData = new FormData(this.base);
+      const method = this.getAttribute("method") as string;
+      const action = this.getAttribute("action") as string;
+      const formData = new FormData(this);
       const data: Record<string, any> = {};
       formData.forEach((value, key) => {
         data[key] = value;
       });
       const url = new URL(window.location.origin, action);
-      await Promise.resolve(this.handleData(data as FData));
+      const prepardData = await Promise.resolve(
+        this.handlePrepareData(data as FData)
+      );
+      await Promise.resolve(this.handleData(prepardData));
       const response = await this.fetcher(url, method, formData);
       await Promise.resolve(this.handleResponse(response));
     });
@@ -37,6 +34,13 @@ export class GrainForm<
     return data;
   }
 
+  handlePrepareData(data: FData): FData | Promise<FData> {
+    return data;
+  }
   handleData(data: FData): void | Promise<void> {}
   handleResponse(response: Response): void | Promise<void> {}
+
+  static mount(name: string, constructor: CustomElementConstructor) {
+    customElements.define(name, constructor);
+  }
 }

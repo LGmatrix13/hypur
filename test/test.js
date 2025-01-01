@@ -1,5 +1,14 @@
 // ../builds/grain/index.js
-class n extends HTMLElement {
+window.HYPUR = { LOADING: false };
+function m() {
+  window.HYPUR.LOADING = true;
+}
+function y() {
+  window.HYPUR.LOADING = false;
+}
+var r = { start: m, end: y };
+
+class s extends HTMLElement {
   onClick(t) {
   }
   onChange(t) {
@@ -52,65 +61,87 @@ class n extends HTMLElement {
   }
   static spread(t, e) {
     Object.keys(e).forEach((o) => {
-      let s = t.querySelector(`[is="${o}"]`);
-      if (!s) {
-        let r = t.querySelector(o);
-        if (!r)
+      let n = t.querySelector(`[is="${o}"]`);
+      if (!n) {
+        let i = t.querySelector(o);
+        if (!i)
           throw new Error(`Grain of nam ${o} could not be found`);
-        r.innerText = e[o];
+        i.innerText = e[o];
       } else
-        s.innerText = e[o];
+        n.innerText = e[o];
     });
   }
   static remove(t) {
     t.remove();
   }
   connectedCallback() {
-    if (n.prototype.onClick !== this.onClick)
+    if (s.prototype.onClick !== this.onClick)
       this.addEventListener("click", this.onClick.bind(this));
-    if (n.prototype.onChange !== this.onChange)
+    if (s.prototype.onChange !== this.onChange)
       this.addEventListener("change", this.onChange.bind(this));
-    if (n.prototype.onInput !== this.onInput)
+    if (s.prototype.onInput !== this.onInput)
       this.addEventListener("input", this.onInput.bind(this));
-    if (n.prototype.onMouseOver !== this.onMouseOver)
+    if (s.prototype.onMouseOver !== this.onMouseOver)
       this.addEventListener("mouseover", this.onMouseOver.bind(this));
-    if (n.prototype.onMouseOut !== this.onMouseOut)
+    if (s.prototype.onMouseOut !== this.onMouseOut)
       this.addEventListener("mouseout", this.onMouseOut.bind(this));
-    if (n.prototype.onKeyDown !== this.onKeyDown)
+    if (s.prototype.onKeyDown !== this.onKeyDown)
       this.addEventListener("keydown", this.onKeyDown.bind(this));
-    if (n.prototype.onKeyUp !== this.onKeyUp)
+    if (s.prototype.onKeyUp !== this.onKeyUp)
       this.addEventListener("keyup", this.onKeyUp.bind(this));
   }
   disconnectedCallback() {
-    if (n.prototype.onClick !== this.onClick)
+    if (s.prototype.onClick !== this.onClick)
       this.removeEventListener("click", this.onClick.bind(this));
-    if (n.prototype.onChange !== this.onChange)
+    if (s.prototype.onChange !== this.onChange)
       this.removeEventListener("change", this.onChange.bind(this));
-    if (n.prototype.onInput !== this.onInput)
+    if (s.prototype.onInput !== this.onInput)
       this.removeEventListener("input", this.onInput.bind(this));
-    if (n.prototype.onMouseOver !== this.onMouseOver)
+    if (s.prototype.onMouseOver !== this.onMouseOver)
       this.removeEventListener("mouseover", this.onMouseOver.bind(this));
-    if (n.prototype.onMouseOut !== this.onMouseOut)
+    if (s.prototype.onMouseOut !== this.onMouseOut)
       this.removeEventListener("mouseout", this.onMouseOut.bind(this));
-    if (n.prototype.onKeyDown !== this.onKeyDown)
+    if (s.prototype.onKeyDown !== this.onKeyDown)
       this.removeEventListener("keydown", this.onKeyDown.bind(this));
-    if (n.prototype.onKeyUp !== this.onKeyUp)
+    if (s.prototype.onKeyUp !== this.onKeyUp)
       this.removeEventListener("keyup", this.onKeyUp.bind(this));
   }
   static mount(t, e) {
     customElements.define(t, e);
   }
+  static async fetcher(t, e, o) {
+    r.start();
+    let n = new URL(window.origin, t), i = await fetch(n, { method: e, body: JSON.stringify(o) });
+    return r.end(), i;
+  }
+  static async delete(t, e, o) {
+    let n = await s.fetcher(t, "DELETE", e);
+    if (o)
+      await Promise.resolve(o(n));
+  }
+  static async put(t, e, o) {
+    let n = await s.fetcher(t, "PUT", e);
+    if (o)
+      await Promise.resolve(o(n));
+  }
+  static async post(t, e, o) {
+    let n = await s.fetcher(t, "POST", e);
+    if (o)
+      await Promise.resolve(o(n));
+  }
+  static async get(t, e, o) {
+    let n = await s.fetcher(t, "GET", e);
+    if (o)
+      await Promise.resolve(o(n));
+  }
+  static async hypermedia(t, e, o, n) {
+    let a = await (await s.fetcher(t, e, o)).text();
+    if (n)
+      await Promise.resolve(n(a));
+  }
 }
-window.HYPUR = { LOADING: false };
-function f() {
-  window.HYPUR.LOADING = true;
-}
-function l() {
-  window.HYPUR.LOADING = false;
-}
-var i = { start: f, end: l };
 
-class y extends n {
+class l extends s {
   defaultState;
   state;
   constructor(t) {
@@ -123,35 +154,20 @@ class y extends n {
       throw new Error('Grain could not seed state. Make sure The "grain-state" attribute is set.');
     this.state = JSON.parse(t);
   }
-  async fetcher(t, e) {
-    i.start();
-    let o = new URL(window.origin, t), s = await fetch(o, { method: e, body: JSON.stringify(this.state) });
-    return i.end(), s;
-  }
   async delete(t, e) {
-    let o = await this.fetcher(t, "DELETE");
-    if (e)
-      await Promise.resolve(e(o));
+    await s.delete(t, this.state, e);
   }
   async put(t, e) {
-    let o = await this.fetcher(t, "PUT");
-    if (e)
-      await Promise.resolve(e(o));
+    await s.put(t, this.state, e);
   }
   async post(t, e) {
-    let o = await this.fetcher(t, "POST");
-    if (e)
-      await Promise.resolve(e(o));
+    await s.post(t, this.state, e);
   }
   async get(t, e) {
-    let o = await this.fetcher(t, "GET");
-    if (e)
-      await Promise.resolve(e(o));
+    await s.get(t, this.state, e);
   }
   async hypermedia(t, e, o) {
-    let r = await (await this.fetcher(t, e)).text();
-    if (o)
-      await Promise.resolve(o(r));
+    await s.hypermedia(t, e, this.state, o);
   }
 }
 async function u(t) {
@@ -160,14 +176,14 @@ async function u(t) {
 function p() {
   let t = Array.from(document.getElementsByTagName("a")), e = window.location.origin;
   t.filter((o) => o.getAttribute("hypur-link") !== "false").forEach((o) => {
-    let s = o, r = s.getAttribute("href");
-    if (r === null)
-      throw new Error(`hypur link of id ${s.id} does not have an href attribute`);
-    let a = new URL(r, e), d = s.cloneNode(true);
-    s.replaceWith(d), d.addEventListener("click", async (h) => {
-      i.start(), h.preventDefault();
-      let c = await u(a);
-      history.pushState(null, "", a.href), document.body.innerHTML = c, p(), i.end();
+    let n = o, i = n.getAttribute("href");
+    if (i === null)
+      throw new Error(`hypur link of id ${n.id} does not have an href attribute`);
+    let a = new URL(i, e), d = n.cloneNode(true);
+    n.replaceWith(d), d.addEventListener("click", async (c) => {
+      r.start(), c.preventDefault();
+      let h = await u(a);
+      history.pushState(null, "", a.href), document.body.innerHTML = h, p(), r.end();
     });
   });
 }
@@ -175,40 +191,43 @@ document.addEventListener("DOMContentLoaded", () => {
   p();
 });
 window.addEventListener("popstate", async () => {
-  i.start();
+  r.start();
   let t = new URL(window.location.href), e = await u(t);
-  document.body.innerHTML = e, p(), i.end();
+  document.body.innerHTML = e, p(), r.end();
 });
 var D = window.HYPUR.LOADING;
 
 // test.ts
-class CardButton extends y {
+class CardButton extends l {
   constructor() {
     super({
       clicks: 0
     });
   }
   onClick() {
+    this.post("/test", (response) => {
+      console.log(response.text());
+    });
     this.state = {
       clicks: this.state.clicks + 1
     };
-    const card = n.within(this.parentElement, "card-title");
+    const card = s.within(this.parentElement, "card-title");
     card.innerText = `I have been clicked ${this.state.clicks} times!`;
   }
 }
 
-class AddCardButton extends n {
+class AddCardButton extends s {
   constructor() {
     super();
   }
   onClick() {
-    const newCard = n.last("card").cloneNode(true);
-    n.spread(newCard, {
+    const newCard = s.last("card").cloneNode(true);
+    s.spread(newCard, {
       "card-title": "New Card!",
       "card-button": "Click me, i'm new!"
     });
-    n.first("cards").append(newCard);
+    s.first("cards").append(newCard);
   }
 }
-n.mount("button-add-card", AddCardButton);
-n.mount("card-button", CardButton);
+s.mount("button-add-card", AddCardButton);
+s.mount("card-button", CardButton);
