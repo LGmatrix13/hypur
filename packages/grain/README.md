@@ -1,15 +1,7 @@
-# hypur
+# @hypur/grain
 
-To install dependencies:
-
-```bash
-bun install
-```
-
-To run:
+Lightweight package to easily introduce reactivity to to server-side applications
 
 ```bash
-bun run index.ts
+npm install @hypur/grain
 ```
-
-This project was created using `bun init` in bun v1.1.42. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
