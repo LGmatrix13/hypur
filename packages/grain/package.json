@@ -1,7 +1,7 @@
 {
   "name": "@hypur/grain",
   "version": "0.0.1",
-  "private": "false",
+  "private": false,
   "module": "index.ts",
   "type": "module",
   "devDependencies": {
