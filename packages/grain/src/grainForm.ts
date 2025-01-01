@@ -6,9 +6,9 @@ export class GrainForm<
   base: HTMLFormElement;
 
   constructor(name: string) {
-    const baseElement = document.querySelector(`form[hypur=${name}]`);
+    const baseElement = document.querySelector(`form[grain=${name}]`);
     if (baseElement === null) {
-      throw new Error(`HTMLElement ${name} does not exist`);
+      throw new Error(`GrainForm of name ${name} does not exist`);
     }
     this.base = baseElement as HTMLFormElement;
     this.base.addEventListener("submit", async (event) => {

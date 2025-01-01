@@ -1,31 +1,47 @@
-import type { Action, Listeners } from "./types";
-export declare const stateStore: WeakMap<WeakKey, any>;
-export declare class Grain<TState extends Record<string, any> = Record<string, any>> {
+import type { Method } from "./types";
+export declare const stateContext: WeakMap<HTMLElement, any>;
+export declare const defaultStateContext: WeakMap<HTMLElement, any>;
+export declare const listenerContext: WeakMap<HTMLElement, any>;
+export declare class Grain {
     name: string;
     base: HTMLElement;
-    listeners: Listeners<TState>;
-    defaultState?: TState;
-    constructor(name: string, state?: TState, base?: HTMLElement);
-    get state(): TState;
-    setState(callback: (prev: TState) => TState): void;
-    resetState(): void;
-    private set state(value);
+    onClick(event: Event): void;
+    onChange(event: Event): void;
+    onInput(event: Event): void;
+    onMouseOver(event: Event): void;
+    onMouseOut(event: Event): void;
+    onKeyDown(event: Event): void;
+    onKeyUp(event: Event): void;
+    constructor(name: string, base?: HTMLElement);
+    mount(): void;
     innerText(value: string): void;
     innerHTML(value: string): void;
     outerHTML(value: string): void;
-    onEvent(eventType: string, action: Action<Event, TState>): this;
-    onClick(action: Action<MouseEvent, TState>): this;
-    onChange(action: Action<Event, TState>): this;
-    onInput(action: Action<InputEvent, TState>): this;
-    onMouseOver(action: Action<MouseEvent, TState>): this;
-    onMouseOut(action: Action<MouseEvent, TState>): this;
-    onKeyDown(action: Action<KeyboardEvent, TState>): this;
-    onKeyUp(action: Action<KeyboardEvent, TState>): this;
+    static within(element: HTMLElement, name: string): Grain;
+    within(element: HTMLElement): Grain;
+    static last(name: string): Grain;
+    last(): Grain;
+    static first(name: string): Grain;
+    first(): Grain;
+    static all(name: string): Grain[];
+    all(): Grain[];
+    static append(grain: Grain, otherGrain: Grain): void;
+    append(otherGrain: Grain): void;
+    static prepend(grain: Grain, otherGrain: Grain): void;
+    prepend(otherGrain: Grain): void;
+}
+export declare class ReactiveGrain<TState extends Record<string, any> = Record<string, any>> extends Grain {
+    constructor(name: string, defaultState?: TState, base?: HTMLElement);
+    seedState(): void;
+    mount(): void;
+    get state(): TState;
+    get defaultState(): TState;
+    set state(newState: TState);
     private fetcher;
     delete(url: string, logic?: (data: Response) => void | Promise<void>): Promise<void>;
     put(url: string, logic?: (data: Response) => void | Promise<void>): Promise<void>;
     post(url: string, logic?: (data: Response) => void | Promise<void>): Promise<void>;
     get(url: string, logic?: (data: Response) => void | Promise<void>): Promise<void>;
-    hypermedia(url: string, method: "GET" | "POST" | "DELETE" | "PUT" | "PATCH", logic?: (text: string) => void | Promise<void>): Promise<void>;
-    handle(): Promise<void> | void;
+    hypermedia(url: string, method: Method, logic?: (text: string) => void | Promise<void>): Promise<void>;
 }
+export declare function listeners(grain: Grain): void;

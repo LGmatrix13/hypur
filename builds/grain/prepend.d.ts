@@ -1,8 +1,8 @@
-import { Grain } from "./grain";
-declare function grain<TState extends Record<string, any> = Record<string, any>, EState extends Record<string, any> = Record<string, any>>(target: Grain<TState>, element: Grain<EState>, content: EState): void;
-declare function hypermedia<TState extends Record<string, any> = Record<string, any>, EState extends Record<string, any> = Record<string, any>>(target: Grain<TState>, element: Grain<EState>, content: string): void;
+import { Grain, ReactiveGrain } from "./grain";
+declare function reactiveGrain(target: Grain, element: ReactiveGrain, content: Record<string, string>): HTMLElement;
+declare function grain(target: Grain, element: Grain, content: Record<string, any>): void;
 export declare const prepend: {
+    reactiveGrain: typeof reactiveGrain;
     grain: typeof grain;
-    hypermedia: typeof hypermedia;
 };
 export {};
