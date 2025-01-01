@@ -1,4 +1,4 @@
-import { Grain, ReactiveGrain } from "../builds/grain/index.js";
+import { Grain, ReactiveGrain } from "../packages/grain/build/grain";
 
 interface ICardButtonState {
   clicks: number;
