@@ -12,7 +12,6 @@ class CardButton extends ReactiveGrain<ICardButtonState> {
   }
 
   override onClick() {
-    this.post("/test", () => {});
     this.state = {
       clicks: this.state.clicks + 1,
     };
