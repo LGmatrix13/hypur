@@ -1,6 +1,6 @@
 # @hypur/grain
 
-Lightweight package to easily introduce reactivity to to server-side applications
+An extremely lightweight (1.26 KB gziped) package to easily introduce reactivity to to server-side applications.
 
 # Installation
 
@@ -181,7 +181,9 @@ class ButtonGrain extends ReactiveGrain<IButtonGrainState> {
 
   override onClick() {
     this.state.clicks++;
-    Sow.first("clicker-count").innerText = `I have been clicked ${this.state.clicks} times`;
+    Sow.first(
+      "clicker-count"
+    ).innerText = `I have been clicked ${this.state.clicks} times`;
   }
 }
 ```
@@ -340,7 +342,9 @@ class ButtonGrain extends ReactiveGrain<IButtonGrainState> {
 
   override onClick() {
     this.state.clicks++;
-    Sow.first("clicker-count").innerText = `I have been clicked ${this.state.clicks} times`;
+    Sow.first(
+      "clicker-count"
+    ).innerText = `I have been clicked ${this.state.clicks} times`;
   }
 }
 
@@ -382,7 +386,9 @@ class ButtonGrain extends ReactiveGrain<IButtonGrainState> {
 
   override onClick() {
     this.state.clicks++;
-    Sow.first("clicker-count").innerText = `I have been clicked ${this.state.clicks} times`;
+    Sow.first(
+      "clicker-count"
+    ).innerText = `I have been clicked ${this.state.clicks} times`;
   }
 }
 
@@ -408,7 +414,9 @@ class ButtonGrain extends ReactiveGrain<IButtonGrainState> {
 
   override onClick() {
     this.state.clicks++;
-    Sow.first("clicker-count").innerText = `I have been clicked ${this.state.clicks} times`;
+    Sow.first(
+      "clicker-count"
+    ).innerText = `I have been clicked ${this.state.clicks} times`;
   }
 
   override onMouseLeave() {
