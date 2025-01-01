@@ -4,7 +4,7 @@ Use helper methods available via `Sow` to locate and work with other grains. Sup
 
 ```html
 <div>
-  <p hidden="false" is="show-hide-message">I am visible!</p>
+  <p is="show-hide-message">I am visible!</p>
   <button>Hide message above</button>
 </div>
 ```

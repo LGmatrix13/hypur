@@ -5,7 +5,7 @@ This builds off of the [Creating a Grain](/creating-a-grain.md) tutorial. Recall
 ```html
 <div>
   <span>I have not been clicked</span>
-  <button is="button-grain">Click me</button>
+  <button is="clicker-button">Click me</button>
 </div>
 ```
 
@@ -20,7 +20,7 @@ class ButtonGrain extends Grain {
   }
 }
 
-Grain.mount("button-grain", ButtonGrain);
+Grain.mount("clicker-button", ButtonGrain);
 ```
 
 Let's say we want to count the number of times a grain is clicked. To do this, we must `extends` `ReactiveGrain` instead of `Grain` to introduce state for `ButtonGrain`:
@@ -77,12 +77,12 @@ class ButtonGrain extends ReactiveGrain<IButtonGrainState> {
 }
 ```
 
-That's nice, but we probably want to reflect state updates on our UI. Let's update our HTML to add a `is` attribute to our `span` element:
+That's nice, but we probably want to reflect state updates on our UI. Let's update our HTML to add an `is` attribute to our `span` element:
 
 ```html
 <div>
-  <span is="click-count">I have not been clicked</span>
-  <button is="button-grain">Click me</button>
+  <span is="clicker-count">I have not been clicked</span>
+  <button is="clicker-button">Click me</button>
 </div>
 ```
 
@@ -102,9 +102,7 @@ class ButtonGrain extends ReactiveGrain<IButtonGrainState> {
 
   override onClick() {
     this.state.clicks++;
-    Grain.first(
-      "click-count"
-    ).innerText = `I have been clicked ${this.state.clicks} times`;
+    Sow.first("clicker-count").innerText = `I have been clicked ${this.state.clicks} times`;
   }
 }
 ```

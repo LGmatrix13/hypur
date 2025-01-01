@@ -5,7 +5,7 @@ Creating your first grain is easy. Start in your html file. Let's have a button 
 ```html
 <div>
   <span>I have not been clicked</span>
-  <button is="button-grain">Click me</button>
+  <button is="clicker-button">Click me</button>
 </div>
 ```
 
@@ -19,7 +19,7 @@ class ButtonGrain extends Grain {
 }
 ```
 
-Let's say we want to react to `button-grain` being clicked. To do this, we can `override` the `onClick` function:
+Let's say we want to react to `clicker-button` being clicked. To do this, we can `override` the `onClick` function:
 
 ```ts
 class ButtonGrain extends Grain {
@@ -46,7 +46,7 @@ class ButtonGrain extends Grain {
   }
 }
 
-Grain.mount("button-grain", ButtonGrain);
+Grain.mount("clicker-button", ButtonGrain);
 ```
 
-In the console you should now see "I was clicked!" when you click `button-grain`!
+In the console you should now see "I was clicked!" when you click `clicker-button`!

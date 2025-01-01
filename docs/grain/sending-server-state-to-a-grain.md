@@ -6,8 +6,8 @@ Take our button clicker example from (Creating a Reactive Grain)["/creating-a-re
 
 ```html
 <div>
-  <span is="click-count">I have not been clicked</span>
-  <button is="click-button">Click me</button>
+  <span is="clicker-count">I have not been clicked</span>
+  <button is="clicker-button">Click me</button>
 </div>
 ```
 
@@ -25,21 +25,19 @@ class ButtonGrain extends ReactiveGrain<IButtonGrainState> {
 
   override onClick() {
     this.state.clicks++;
-    Grain.first(
-      "click-count"
-    ).innerText = `I have been clicked ${this.state.clicks} times`;
+    Sow.first("clicker-count").innerText = `I have been clicked ${this.state.clicks} times`;
   }
 }
 
-Grain.mount("click-button", ButtonGrain);
+Grain.mount("clicker-button", ButtonGrain);
 ```
 
 Let's assume our backend can interpolate the current button count in the `p` tag' such that if the count is 5, it would return:
 
 ```html
 <div>
-  <span is="click-count">I have been clicked 5 times!</span>
-  <button is="click-button">Click me</button>
+  <span is="clicker-count">I have been clicked 5 times!</span>
+  <button is="clicker-button">Click me</button>
 </div>
 ```
 
@@ -47,8 +45,8 @@ To have 5 be used by our grain as the starting count, let's create an attribute 
 
 ```html
 <div>
-  <span is="click-count" current-count="5">I have been clicked 5 times!</span>
-  <button is="button-grain">Click me</button>
+  <span is="clicker-count" current-count="5">I have been clicked 5 times!</span>
+  <button is="clicker-button">Click me</button>
 </div>
 ```
 
@@ -69,9 +67,7 @@ class ButtonGrain extends ReactiveGrain<IButtonGrainState> {
 
   override onClick() {
     this.state.clicks++;
-    Grain.first(
-      "click-count"
-    ).innerText = `I have been clicked ${this.state.clicks} times`;
+    Sow.first("clicker-count").innerText = `I have been clicked ${this.state.clicks} times`;
   }
 }
 
@@ -97,7 +93,7 @@ class ButtonGrain extends ReactiveGrain<IButtonGrainState> {
 
   override onClick() {
     this.state.clicks++;
-    Grain.first("click-count").innerText = `I have been clicked ${this.state.clicks} times`;
+    Sow.first("clicker-count").innerText = `I have been clicked ${this.state.clicks} times`;
   }
 
   override onMouseLeave() {
@@ -105,7 +101,7 @@ class ButtonGrain extends ReactiveGrain<IButtonGrainState> {
   }
 }
 
-Grain.mount("click-button", ButtonGrain);
+Grain.mount("clicker-button", ButtonGrain);
 ```
 
 That's it! In roughly 20 lines of code, we have an interface that shares state with a server!
