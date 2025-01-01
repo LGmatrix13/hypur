@@ -1,11 +1,13 @@
 {
   "name": "@hypur/grain",
   "version": "0.0.1",
+  "private": "false",
   "module": "index.ts",
   "type": "module",
   "devDependencies": {
     "@types/bun": "latest"
   },
+  "main": "../../builds/grain",
   "scripts": {
     "build:grain": "bun build ./src/index.ts --outdir ../../builds/grain --minify && bun run build:declaration",
     "build:router": "bun build ./src/router.ts --outdir ../../builds/grain --minify",
