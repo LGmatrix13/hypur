@@ -1,5 +1,5 @@
 import { Grain } from "./grain";
-import { loading } from "./loading";
+import { Sow } from "./sow";
 import type { Method } from "./types";
 
 export class ReactiveGrain<
@@ -25,19 +25,19 @@ export class ReactiveGrain<
   }
 
   async delete(url: string, logic?: (data: Response) => void | Promise<void>) {
-    await Grain.delete(url, this.state, logic);
+    await Sow.delete(url, this.state, logic);
   }
 
   async put(url: string, logic?: (data: Response) => void | Promise<void>) {
-    await Grain.put(url, this.state, logic);
+    await Sow.put(url, this.state, logic);
   }
 
   async post(url: string, logic?: (data: Response) => void | Promise<void>) {
-    await Grain.post(url, this.state, logic);
+    await Sow.post(url, this.state, logic);
   }
 
   async get(url: string, logic?: (data: Response) => void | Promise<void>) {
-    await Grain.get(url, this.state, logic);
+    await Sow.get(url, this.state, logic);
   }
 
   async hypermedia(
@@ -45,6 +45,6 @@ export class ReactiveGrain<
     method: Method,
     logic?: (text: string) => void | Promise<void>
   ) {
-    await Grain.hypermedia(url, method, this.state, logic);
+    await Sow.hypermedia(url, method, this.state, logic);
   }
 }
