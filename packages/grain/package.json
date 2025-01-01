@@ -8,6 +8,7 @@
   "devDependencies": {
     "@types/bun": "latest"
   },
+  "description": "An extremely lightweight (1.26 KB gziped) package to easily introduce reactivity to to server-side applications.",
   "scripts": {
     "build": "bun run build:grain && bun run build:router && bun run build:declaration",
     "build:grain": "bun build ./src/index.ts --outdir ./build --minify && bun run build:declaration",
