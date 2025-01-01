@@ -73,7 +73,7 @@ class SignupForm extends GrainForm<ISignupFormData> {
 Grain.mount("signup-form", SignupForm);
 ```
 
-Neat! What about [hypermedia]("https://htmx.org/essays/hypermedia-apis-vs-data-apis/"), though? We can use `Sow` to replace our form with the hypermedia sent from the server:
+Neat! What about [hypermedia](https://htmx.org/essays/hypermedia-apis-vs-data-apis/), though? We can use `Sow` to replace our form with the hypermedia sent from the server:
 
 ```ts
 interface ISignupFormData {
