@@ -6,10 +6,9 @@ interface ICardButtonState {
 
 class CardButton extends ReactiveGrain<ICardButtonState> {
   constructor() {
-    const defaultState = {
+    super({
       clicks: 0,
-    };
-    super("card-button", defaultState);
+    });
   }
 
   override onClick() {
@@ -17,26 +16,27 @@ class CardButton extends ReactiveGrain<ICardButtonState> {
       clicks: this.state.clicks + 1,
     };
     const card = Grain.within(
-      this.base.parentElement as HTMLElement,
+      this.parentElement as HTMLElement,
       "card-title"
-    );
-    card.innerText(`I have been clicked ${this.state.clicks} times!`);
+    ) as HTMLElement;
+    card.innerText = `I have been clicked ${this.state.clicks} times!`;
   }
 }
 
 class AddCardButton extends Grain {
   constructor() {
-    super("button-add-card");
+    super();
   }
 
   override onClick() {
-    const newCard = Grain.last("card").clone();
+    const newCard = Grain.last("card").cloneNode(true) as HTMLElement;
+    Grain.spread(newCard, {
+      "card-title": "New Card!",
+      "card-button": "Click me, i'm new!",
+    });
     Grain.first("cards").append(newCard);
-    mount();
   }
 }
 
-function mount() {
-  new AddCardButton().mount();
-  new CardButton().mount();
-}
+Grain.mount("button-add-card", AddCardButton);
+Grain.mount("card-button", CardButton);

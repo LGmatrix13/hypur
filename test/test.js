@@ -1,105 +1,214 @@
 // ../builds/grain/index.js
-window.HYPUR = { LOADING: false };
-var i = new WeakMap;
-var p = new WeakMap;
-var l = new WeakMap;
-
-class s {
-  name;
-  base;
-  onClick(e) {
+class n extends HTMLElement {
+  onClick(t) {
   }
-  onChange(e) {
+  onChange(t) {
   }
-  onInput(e) {
+  onInput(t) {
   }
-  onMouseOver(e) {
+  onMouseOver(t) {
   }
-  onMouseOut(e) {
+  onMouseOut(t) {
   }
-  onKeyDown(e) {
+  onKeyDown(t) {
   }
-  onKeyUp(e) {
+  onKeyUp(t) {
   }
-  constructor(e, t) {
-    this.name = e, this.base = t || s.last(e).base, !t && y(this);
+  constructor() {
+    super();
   }
-  mount() {
-    s.all(this.name).forEach((e) => new s(this.name, e.base));
-  }
-  innerText(e) {
-    this.base.innerText = e;
-  }
-  innerHTML(e) {
-    this.base.innerHTML = e;
-  }
-  outerHTML(e) {
-    this.base.outerHTML = e;
-  }
-  static within(e, t) {
-    let o = e.querySelector(`[grain="${t}"]`);
+  static within(t, e) {
+    let o = t.querySelector(`[is="${e}"]`);
     if (!o)
-      throw new Error(`No Grain of name ${t} found within requested element`);
-    return new s(t, o);
+      throw new Error(`No Grain of name ${e} found within requested element`);
+    return o;
   }
-  static last(e) {
-    let t = Array.from(document.querySelectorAll(`[grain="${e}"]`));
-    if (!t.length)
-      throw new Error(`No Grain of name ${e} could be found`);
-    let o = t[t.length - 1];
-    return new s(e, o);
+  static last(t) {
+    let e = Array.from(document.querySelectorAll(`[is="${t}"]`));
+    if (!e.length)
+      throw new Error(`No Grain of name ${t} could be found`);
+    return e[e.length - 1];
   }
-  static first(e) {
-    let t = document.querySelector(`[grain="${e}"]`);
+  static first(t) {
+    let e = document.querySelector(`[is="${t}"]`);
+    if (!e)
+      throw new Error(`No Grain of name ${t} could be found`);
+    return e;
+  }
+  static all(t) {
+    let e = Array.from(document.querySelectorAll(`[is="${t}"]`));
+    if (!e.length)
+      throw new Error(`No Grain of name ${t} could be found`);
+    return e;
+  }
+  static append(t, e) {
+    t.append(e);
+  }
+  static prepend(t, e) {
+    t.prepend(e);
+  }
+  static cloneNode(t) {
+    return t.cloneNode(true);
+  }
+  static spread(t, e) {
+    Object.keys(e).forEach((o) => {
+      let s = t.querySelector(`[is="${o}"]`);
+      if (!s) {
+        let r = t.querySelector(o);
+        if (!r)
+          throw new Error(`Grain of nam ${o} could not be found`);
+        r.innerText = e[o];
+      } else
+        s.innerText = e[o];
+    });
+  }
+  static remove(t) {
+    t.remove();
+  }
+  connectedCallback() {
+    if (n.prototype.onClick !== this.onClick)
+      this.addEventListener("click", this.onClick.bind(this));
+    if (n.prototype.onChange !== this.onChange)
+      this.addEventListener("change", this.onChange.bind(this));
+    if (n.prototype.onInput !== this.onInput)
+      this.addEventListener("input", this.onInput.bind(this));
+    if (n.prototype.onMouseOver !== this.onMouseOver)
+      this.addEventListener("mouseover", this.onMouseOver.bind(this));
+    if (n.prototype.onMouseOut !== this.onMouseOut)
+      this.addEventListener("mouseout", this.onMouseOut.bind(this));
+    if (n.prototype.onKeyDown !== this.onKeyDown)
+      this.addEventListener("keydown", this.onKeyDown.bind(this));
+    if (n.prototype.onKeyUp !== this.onKeyUp)
+      this.addEventListener("keyup", this.onKeyUp.bind(this));
+  }
+  disconnectedCallback() {
+    if (n.prototype.onClick !== this.onClick)
+      this.removeEventListener("click", this.onClick.bind(this));
+    if (n.prototype.onChange !== this.onChange)
+      this.removeEventListener("change", this.onChange.bind(this));
+    if (n.prototype.onInput !== this.onInput)
+      this.removeEventListener("input", this.onInput.bind(this));
+    if (n.prototype.onMouseOver !== this.onMouseOver)
+      this.removeEventListener("mouseover", this.onMouseOver.bind(this));
+    if (n.prototype.onMouseOut !== this.onMouseOut)
+      this.removeEventListener("mouseout", this.onMouseOut.bind(this));
+    if (n.prototype.onKeyDown !== this.onKeyDown)
+      this.removeEventListener("keydown", this.onKeyDown.bind(this));
+    if (n.prototype.onKeyUp !== this.onKeyUp)
+      this.removeEventListener("keyup", this.onKeyUp.bind(this));
+  }
+  static mount(t, e) {
+    customElements.define(t, e);
+  }
+}
+window.HYPUR = { LOADING: false };
+function f() {
+  window.HYPUR.LOADING = true;
+}
+function l() {
+  window.HYPUR.LOADING = false;
+}
+var i = { start: f, end: l };
+
+class y extends n {
+  defaultState;
+  state;
+  constructor(t) {
+    super();
+    this.defaultState = t || {}, this.state = this.defaultState;
+  }
+  seedState() {
+    let t = this.getAttribute("grain-state");
     if (!t)
-      throw new Error(`No Grain of name ${e} could be found`);
-    return new s(e, t);
+      throw new Error('Grain could not seed state. Make sure The "grain-state" attribute is set.');
+    this.state = JSON.parse(t);
   }
-  static all(e) {
-    let t = Array.from(document.querySelectorAll(`[grain="${e}"]`));
-    if (!t.length)
-      throw new Error(`No Grain of name ${e} could be found`);
-    return t.map((o) => new s(e, o));
+  async fetcher(t, e) {
+    i.start();
+    let o = new URL(window.origin, t), s = await fetch(o, { method: e, body: JSON.stringify(this.state) });
+    return i.end(), s;
   }
-  static append(e, t) {
-    e.base.append(t.base);
+  async delete(t, e) {
+    let o = await this.fetcher(t, "DELETE");
+    if (e)
+      await Promise.resolve(e(o));
   }
-  static prepend(e, t) {
-    e.base.prepend(t.base);
+  async put(t, e) {
+    let o = await this.fetcher(t, "PUT");
+    if (e)
+      await Promise.resolve(e(o));
+  }
+  async post(t, e) {
+    let o = await this.fetcher(t, "POST");
+    if (e)
+      await Promise.resolve(e(o));
+  }
+  async get(t, e) {
+    let o = await this.fetcher(t, "GET");
+    if (e)
+      await Promise.resolve(e(o));
+  }
+  async hypermedia(t, e, o) {
+    let r = await (await this.fetcher(t, e)).text();
+    if (o)
+      await Promise.resolve(o(r));
   }
 }
-function y(e) {
-  let t = l.get(e.base) || [];
-  if (s.prototype.onClick !== e.onClick)
-    e.base.addEventListener("click", e.onClick.bind(e)), t.push({ eventType: "click", logic: e.onClick.bind(e) });
-  if (s.prototype.onChange !== e.onChange)
-    e.base.addEventListener("change", e.onChange.bind(e)), t.push({ eventType: "change", logic: e.onChange.bind(e) });
-  if (s.prototype.onInput !== e.onInput)
-    e.base.addEventListener("input", e.onInput.bind(e)), t.push({ eventType: "input", logic: e.onInput.bind(e) });
-  if (s.prototype.onMouseOver !== e.onMouseOver)
-    e.base.addEventListener("mouseover", e.onMouseOver.bind(e)), t.push({ eventType: "mouseover", logic: e.onMouseOver.bind(e) });
-  if (s.prototype.onMouseOut !== e.onMouseOut)
-    e.base.addEventListener("mouseout", e.onMouseOut.bind(e)), t.push({ eventType: "mouseout", logic: e.onMouseOut.bind(e) });
-  if (s.prototype.onKeyDown !== e.onKeyDown)
-    e.base.addEventListener("keydown", e.onKeyDown.bind(e)), t.push({ eventType: "keydown", logic: e.onKeyDown.bind(e) });
-  if (s.prototype.onKeyUp !== e.onKeyUp)
-    e.base.addEventListener("keyup", e.onKeyUp.bind(e)), t.push({ eventType: "keyup", logic: e.onKeyUp.bind(e) });
-  l.set(e.base, t);
+async function u(t) {
+  return await (await fetch(t, { method: "GET", headers: { "Content-Type": "text/html; charset=utf-8" } })).text();
 }
-var H = window.HYPUR.LOADING;
+function p() {
+  let t = Array.from(document.getElementsByTagName("a")), e = window.location.origin;
+  t.filter((o) => o.getAttribute("hypur-link") !== "false").forEach((o) => {
+    let s = o, r = s.getAttribute("href");
+    if (r === null)
+      throw new Error(`hypur link of id ${s.id} does not have an href attribute`);
+    let a = new URL(r, e), d = s.cloneNode(true);
+    s.replaceWith(d), d.addEventListener("click", async (h) => {
+      i.start(), h.preventDefault();
+      let c = await u(a);
+      history.pushState(null, "", a.href), document.body.innerHTML = c, p(), i.end();
+    });
+  });
+}
+document.addEventListener("DOMContentLoaded", () => {
+  p();
+});
+window.addEventListener("popstate", async () => {
+  i.start();
+  let t = new URL(window.location.href), e = await u(t);
+  document.body.innerHTML = e, p(), i.end();
+});
+var D = window.HYPUR.LOADING;
 
 // test.ts
-class AddCardButton extends s {
+class CardButton extends y {
   constructor() {
-    super("button-add-card");
+    super({
+      clicks: 0
+    });
   }
   onClick() {
-    const newCard = s.last("card").clone();
-    s.first("cards").append(newCard);
-    CardButtons.refresh();
+    this.state = {
+      clicks: this.state.clicks + 1
+    };
+    const card = n.within(this.parentElement, "card-title");
+    card.innerText = `I have been clicked ${this.state.clicks} times!`;
   }
 }
-(() => {
-  CardButtons.refresh();
-  new AddCardButton;
-})();
+
+class AddCardButton extends n {
+  constructor() {
+    super();
+  }
+  onClick() {
+    const newCard = n.last("card").cloneNode(true);
+    n.spread(newCard, {
+      "card-title": "New Card!",
+      "card-button": "Click me, i'm new!"
+    });
+    n.first("cards").append(newCard);
+  }
+}
+n.mount("button-add-card", AddCardButton);
+n.mount("card-button", CardButton);

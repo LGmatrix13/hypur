@@ -1,14 +1,7 @@
 import { loading } from "./loading";
-import type { Listeners, Method } from "./types";
+import type { Method } from "./types";
 
-export const stateContext = new WeakMap<HTMLElement>();
-export const defaultStateContext = new WeakMap<HTMLElement>();
-export const listenerContext = new WeakMap<HTMLElement>();
-
-export class Grain {
-  name: string;
-  base: HTMLElement;
-
+export class Grain extends HTMLElement {
   onClick(event: Event): void {}
   onChange(event: Event): void {}
   onInput(event: Event): void {}
@@ -17,237 +10,125 @@ export class Grain {
   onKeyDown(event: Event): void {}
   onKeyUp(event: Event): void {}
 
-  constructor(name: string, base?: HTMLElement) {
-    this.name = name;
-    this.base = base || Grain.last(name).base;
-    listeners(this);
-  }
-
-  mount() {
-    Grain.all(this.name).forEach((grain) => new Grain(this.name, grain.base));
-  }
-
-  innerText(value: string) {
-    this.base.innerText = value;
-  }
-
-  innerHTML(value: string) {
-    this.base.innerHTML = value;
-  }
-
-  outerHTML(value: string) {
-    this.base.outerHTML = value;
+  constructor() {
+    super();
   }
 
   static within(element: HTMLElement, name: string) {
-    const within = element.querySelector(`[grain="${name}"]`);
+    const within = element.querySelector(`[is="${name}"]`);
     if (!within) {
       throw new Error(
         `No Grain of name ${name} found within requested element`
       );
     }
-    return new Grain(name, within as HTMLElement);
-  }
-
-  within(element: HTMLElement) {
-    return Grain.within(element, this.name);
+    return within as HTMLElement;
   }
 
   static last(name: string) {
-    const all = Array.from(document.querySelectorAll(`[grain="${name}"]`));
+    const all = Array.from(document.querySelectorAll(`[is="${name}"]`));
     if (!all.length) {
       throw new Error(`No Grain of name ${name} could be found`);
     }
     const last = all[all.length - 1];
-    return new Grain(name, last as HTMLElement);
-  }
-
-  last() {
-    return Grain.last(this.name);
+    return last as HTMLElement;
   }
 
   static first(name: string) {
-    const first = document.querySelector(`[grain="${name}"]`);
+    const first = document.querySelector(`[is="${name}"]`);
     if (!first) {
       throw new Error(`No Grain of name ${name} could be found`);
     }
-    return new Grain(name, first as HTMLElement);
-  }
-
-  first() {
-    return Grain.first(this.name);
+    return first as HTMLElement;
   }
 
   static all(name: string) {
-    const all = Array.from(document.querySelectorAll(`[grain="${name}"]`));
+    const all = Array.from(document.querySelectorAll(`[is="${name}"]`));
     if (!all.length) {
       throw new Error(`No Grain of name ${name} could be found`);
     }
-    return all.map((item) => new Grain(name, item as HTMLElement));
-  }
-
-  all() {
-    return Grain.all(this.name);
+    return all as HTMLElement[];
   }
 
   static append(grain: Grain, otherGrain: Grain) {
-    grain.base.append(otherGrain.base);
-  }
-
-  append(otherGrain: Grain) {
-    Grain.append(this, otherGrain);
+    grain.append(otherGrain);
   }
 
   static prepend(grain: Grain, otherGrain: Grain) {
-    grain.base.prepend(otherGrain.base);
+    grain.prepend(otherGrain);
   }
 
-  prepend(otherGrain: Grain) {
-    Grain.prepend(this, otherGrain);
-  }
-}
-
-export class ReactiveGrain<
-  TState extends Record<string, any> = Record<string, any>
-> extends Grain {
-  constructor(name: string, defaultState?: TState, base?: HTMLElement) {
-    super(name, base);
-    defaultStateContext.set(this.base, defaultState || {});
-    stateContext.set(this.base, defaultState || {});
+  static cloneNode(grain: Grain) {
+    return grain.cloneNode(true) as HTMLElement;
   }
 
-  seedState() {
-    const seedState = this.base.getAttribute("grain-state");
-    if (!seedState) {
-      throw new Error(
-        `Grain ${this.name} could not seed state. Make sure The "grain-state" attribute is set.`
-      );
-    }
-    const seedStateParsed = JSON.parse(seedState) as TState;
-    stateContext.set(this.base, seedStateParsed);
-  }
-
-  override mount() {
-    Grain.all(this.name).forEach(
-      (grain) => new ReactiveGrain(this.name, this.defaultState, grain.base)
-    );
-  }
-
-  get state() {
-    return stateContext.get(this.base) as TState;
-  }
-
-  get defaultState() {
-    return defaultStateContext.get(this.base) as TState;
-  }
-
-  set state(newState: TState) {
-    stateContext.set(this.base, newState);
-  }
-
-  private async fetcher(url: string, method: Method) {
-    loading.start();
-    const fullUrl = new URL(window.origin, url);
-    const data = await fetch(fullUrl, {
-      method: method,
-      body: stateContext.get(this.base),
+  static spread(element: HTMLElement, content: Record<string, any>) {
+    Object.keys(content).forEach((key) => {
+      const child = element.querySelector(`[is="${key}"]`);
+      if (!child) {
+        const customElement = element.querySelector(key);
+        if (!customElement) {
+          throw new Error(`Grain of nam ${key} could not be found`);
+        }
+        (customElement as HTMLElement).innerText = content[key];
+      } else {
+        (child as HTMLElement).innerText = content[key];
+      }
     });
-    loading.end();
-    return data;
   }
 
-  async delete(url: string, logic?: (data: Response) => void | Promise<void>) {
-    const data = await this.fetcher(url, "DELETE");
-    if (logic) {
-      await Promise.resolve(logic(data));
+  static remove(element: HTMLElement) {
+    element.remove();
+  }
+
+  connectedCallback() {
+    if (Grain.prototype.onClick !== this.onClick) {
+      this.addEventListener("click", this.onClick.bind(this));
+    }
+    if (Grain.prototype.onChange !== this.onChange) {
+      this.addEventListener("change", this.onChange.bind(this));
+    }
+    if (Grain.prototype.onInput !== this.onInput) {
+      this.addEventListener("input", this.onInput.bind(this));
+    }
+    if (Grain.prototype.onMouseOver !== this.onMouseOver) {
+      this.addEventListener("mouseover", this.onMouseOver.bind(this));
+    }
+    if (Grain.prototype.onMouseOut !== this.onMouseOut) {
+      this.addEventListener("mouseout", this.onMouseOut.bind(this));
+    }
+    if (Grain.prototype.onKeyDown !== this.onKeyDown) {
+      this.addEventListener("keydown", this.onKeyDown.bind(this));
+    }
+    if (Grain.prototype.onKeyUp !== this.onKeyUp) {
+      this.addEventListener("keyup", this.onKeyUp.bind(this));
     }
   }
 
-  async put(url: string, logic?: (data: Response) => void | Promise<void>) {
-    const data = await this.fetcher(url, "PUT");
-    if (logic) {
-      await Promise.resolve(logic(data));
+  disconnectedCallback() {
+    if (Grain.prototype.onClick !== this.onClick) {
+      this.removeEventListener("click", this.onClick.bind(this));
+    }
+    if (Grain.prototype.onChange !== this.onChange) {
+      this.removeEventListener("change", this.onChange.bind(this));
+    }
+    if (Grain.prototype.onInput !== this.onInput) {
+      this.removeEventListener("input", this.onInput.bind(this));
+    }
+    if (Grain.prototype.onMouseOver !== this.onMouseOver) {
+      this.removeEventListener("mouseover", this.onMouseOver.bind(this));
+    }
+    if (Grain.prototype.onMouseOut !== this.onMouseOut) {
+      this.removeEventListener("mouseout", this.onMouseOut.bind(this));
+    }
+    if (Grain.prototype.onKeyDown !== this.onKeyDown) {
+      this.removeEventListener("keydown", this.onKeyDown.bind(this));
+    }
+    if (Grain.prototype.onKeyUp !== this.onKeyUp) {
+      this.removeEventListener("keyup", this.onKeyUp.bind(this));
     }
   }
 
-  async post(url: string, logic?: (data: Response) => void | Promise<void>) {
-    const data = await this.fetcher(url, "POST");
-    if (logic) {
-      await Promise.resolve(logic(data));
-    }
+  static mount(name: string, constructor: CustomElementConstructor) {
+    customElements.define(name, constructor);
   }
-
-  async get(url: string, logic?: (data: Response) => void | Promise<void>) {
-    const data = await this.fetcher(url, "GET");
-    if (logic) {
-      await Promise.resolve(logic(data));
-    }
-  }
-
-  async hypermedia(
-    url: string,
-    method: Method,
-    logic?: (text: string) => void | Promise<void>
-  ) {
-    const data = await this.fetcher(url, method);
-    const text = await data.text();
-    if (logic) {
-      await Promise.resolve(logic(text));
-    }
-  }
-}
-
-export function listeners(grain: Grain) {
-  const listeners: Listeners = listenerContext.get(grain.base) || [];
-  if (Grain.prototype.onClick !== grain.onClick) {
-    grain.base.addEventListener("click", grain.onClick.bind(grain));
-    listeners.push({
-      eventType: "click",
-      logic: grain.onClick.bind(grain),
-    });
-  }
-  if (Grain.prototype.onChange !== grain.onChange) {
-    grain.base.addEventListener("change", grain.onChange.bind(grain));
-    listeners.push({
-      eventType: "change",
-      logic: grain.onChange.bind(grain),
-    });
-  }
-  if (Grain.prototype.onInput !== grain.onInput) {
-    grain.base.addEventListener("input", grain.onInput.bind(grain));
-    listeners.push({
-      eventType: "input",
-      logic: grain.onInput.bind(grain),
-    });
-  }
-  if (Grain.prototype.onMouseOver !== grain.onMouseOver) {
-    grain.base.addEventListener("mouseover", grain.onMouseOver.bind(grain));
-    listeners.push({
-      eventType: "mouseover",
-      logic: grain.onMouseOver.bind(grain),
-    });
-  }
-  if (Grain.prototype.onMouseOut !== grain.onMouseOut) {
-    grain.base.addEventListener("mouseout", grain.onMouseOut.bind(grain));
-    listeners.push({
-      eventType: "mouseout",
-      logic: grain.onMouseOut.bind(grain),
-    });
-  }
-  if (Grain.prototype.onKeyDown !== grain.onKeyDown) {
-    grain.base.addEventListener("keydown", grain.onKeyDown.bind(grain));
-    listeners.push({
-      eventType: "keydown",
-      logic: grain.onKeyDown.bind(grain),
-    });
-  }
-  if (Grain.prototype.onKeyUp !== grain.onKeyUp) {
-    grain.base.addEventListener("keyup", grain.onKeyUp.bind(grain));
-    listeners.push({
-      eventType: "keyup",
-      logic: grain.onKeyUp.bind(grain),
-    });
-  }
-
-  listenerContext.set(grain.base, listeners);
 }
