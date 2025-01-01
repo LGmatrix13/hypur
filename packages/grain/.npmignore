@@ -1,3 +1,4 @@
 .changeset
 tsconfig.json
 tsconfig.types.json
+./src
