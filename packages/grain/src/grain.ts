@@ -131,4 +131,76 @@ export class Grain extends HTMLElement {
   static mount(name: string, constructor: CustomElementConstructor) {
     customElements.define(name, constructor);
   }
+
+  private static async fetcher(
+    url: string,
+    method: Method,
+    data: Record<string, any>
+  ) {
+    loading.start();
+    const fullUrl = new URL(window.origin, url);
+    const response = await fetch(fullUrl, {
+      method: method,
+      body: JSON.stringify(data),
+    });
+    loading.end();
+    return response;
+  }
+
+  static async delete(
+    url: string,
+    data: Record<string, any>,
+    logic?: (data: Response) => void | Promise<void>
+  ) {
+    const response = await Grain.fetcher(url, "DELETE", data);
+    if (logic) {
+      await Promise.resolve(logic(response));
+    }
+  }
+
+  static async put(
+    url: string,
+    data: Record<string, any>,
+    logic?: (data: Response) => void | Promise<void>
+  ) {
+    const response = await Grain.fetcher(url, "PUT", data);
+    if (logic) {
+      await Promise.resolve(logic(response));
+    }
+  }
+
+  static async post(
+    url: string,
+    data: Record<string, any>,
+    logic?: (data: Response) => void | Promise<void>
+  ) {
+    const response = await Grain.fetcher(url, "POST", data);
+    if (logic) {
+      await Promise.resolve(logic(response));
+    }
+  }
+
+  static async get(
+    url: string,
+    data: Record<string, any>,
+    logic?: (data: Response) => void | Promise<void>
+  ) {
+    const response = await Grain.fetcher(url, "GET", data);
+    if (logic) {
+      await Promise.resolve(logic(response));
+    }
+  }
+
+  static async hypermedia(
+    url: string,
+    method: Method,
+    data: Record<string, any>,
+    logic?: (text: string) => void | Promise<void>
+  ) {
+    const response = await Grain.fetcher(url, method, data);
+    const text = await response.text();
+    if (logic) {
+      await Promise.resolve(logic(text));
+    }
+  }
 }

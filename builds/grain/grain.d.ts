@@ -1,3 +1,4 @@
+import type { Method } from "./types";
 export declare class Grain extends HTMLElement {
     onClick(event: Event): void;
     onChange(event: Event): void;
@@ -19,4 +20,10 @@ export declare class Grain extends HTMLElement {
     connectedCallback(): void;
     disconnectedCallback(): void;
     static mount(name: string, constructor: CustomElementConstructor): void;
+    private static fetcher;
+    static delete(url: string, data: Record<string, any>, logic?: (data: Response) => void | Promise<void>): Promise<void>;
+    static put(url: string, data: Record<string, any>, logic?: (data: Response) => void | Promise<void>): Promise<void>;
+    static post(url: string, data: Record<string, any>, logic?: (data: Response) => void | Promise<void>): Promise<void>;
+    static get(url: string, data: Record<string, any>, logic?: (data: Response) => void | Promise<void>): Promise<void>;
+    static hypermedia(url: string, method: Method, data: Record<string, any>, logic?: (text: string) => void | Promise<void>): Promise<void>;
 }

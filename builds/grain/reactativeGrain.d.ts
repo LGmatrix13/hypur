@@ -5,7 +5,6 @@ export declare class ReactiveGrain<TState extends Record<string, any> = Record<s
     state: TState;
     constructor(defaultState?: TState);
     seedState(): void;
-    private fetcher;
     delete(url: string, logic?: (data: Response) => void | Promise<void>): Promise<void>;
     put(url: string, logic?: (data: Response) => void | Promise<void>): Promise<void>;
     post(url: string, logic?: (data: Response) => void | Promise<void>): Promise<void>;

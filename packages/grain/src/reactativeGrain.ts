@@ -24,43 +24,20 @@ export class ReactiveGrain<
     this.state = JSON.parse(seedState) as TState;
   }
 
-  private async fetcher(url: string, method: Method) {
-    loading.start();
-    const fullUrl = new URL(window.origin, url);
-    const data = await fetch(fullUrl, {
-      method: method,
-      body: JSON.stringify(this.state),
-    });
-    loading.end();
-    return data;
-  }
-
   async delete(url: string, logic?: (data: Response) => void | Promise<void>) {
-    const data = await this.fetcher(url, "DELETE");
-    if (logic) {
-      await Promise.resolve(logic(data));
-    }
+    await Grain.delete(url, this.state, logic);
   }
 
   async put(url: string, logic?: (data: Response) => void | Promise<void>) {
-    const data = await this.fetcher(url, "PUT");
-    if (logic) {
-      await Promise.resolve(logic(data));
-    }
+    await Grain.put(url, this.state, logic);
   }
 
   async post(url: string, logic?: (data: Response) => void | Promise<void>) {
-    const data = await this.fetcher(url, "POST");
-    if (logic) {
-      await Promise.resolve(logic(data));
-    }
+    await Grain.post(url, this.state, logic);
   }
 
   async get(url: string, logic?: (data: Response) => void | Promise<void>) {
-    const data = await this.fetcher(url, "GET");
-    if (logic) {
-      await Promise.resolve(logic(data));
-    }
+    await Grain.get(url, this.state, logic);
   }
 
   async hypermedia(
@@ -68,10 +45,6 @@ export class ReactiveGrain<
     method: Method,
     logic?: (text: string) => void | Promise<void>
   ) {
-    const data = await this.fetcher(url, method);
-    const text = await data.text();
-    if (logic) {
-      await Promise.resolve(logic(text));
-    }
+    await Grain.hypermedia(url, method, this.state, logic);
   }
 }
