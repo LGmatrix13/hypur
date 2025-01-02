@@ -1,10 +1,8 @@
 import { Grain } from "./grain";
 import type { Method } from "./types";
 export declare class ReactiveGrain<TState extends Record<string, any> = Record<string, any>> extends Grain {
-    readonly defaultState: TState;
     state: TState;
-    constructor(defaultState?: TState);
-    seedState(): void;
+    constructor();
     delete(url: string, logic?: (data: Response) => void | Promise<void>): Promise<void>;
     put(url: string, logic?: (data: Response) => void | Promise<void>): Promise<void>;
     post(url: string, logic?: (data: Response) => void | Promise<void>): Promise<void>;

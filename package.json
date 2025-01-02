@@ -3,8 +3,8 @@
   "private": true,
   "scripts": {
     "test": "bun run test",
-    "build": "cd ./packages/grain && bun run build:grain && bun run build:router",
-    "release": "cd ./packages/grain && bun run build && cd ../../ && changeset publish"
+    "build": "cd ./packages/grain && bun run build && cd ../router && bun run build",
+    "release": "bun run build && cd ../../ && changeset publish"
   },
   "workspaces": [
     "packages/*"
