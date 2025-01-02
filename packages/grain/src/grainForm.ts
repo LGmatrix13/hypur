@@ -41,6 +41,6 @@ export class GrainForm<
   handleResponse(response: Response): void | Promise<void> {}
 
   static mount(name: string, constructor: CustomElementConstructor) {
-    customElements.define(name, constructor);
+    customElements.define(name, constructor, { extends: "form" });
   }
 }
