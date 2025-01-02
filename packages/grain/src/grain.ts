@@ -1,6 +1,3 @@
-import { loading } from "./loading";
-import type { Method } from "./types";
-
 export class Grain extends HTMLElement {
   onClick(event: Event): void {}
   onChange(event: Event): void {}
@@ -62,13 +59,7 @@ export class Grain extends HTMLElement {
     }
   }
 
-  static mount(
-    name: string,
-    constructor: CustomElementConstructor,
-    base?: string
-  ) {
-    customElements.define(name, constructor, {
-      extends: base,
-    });
+  static mount(name: string, constructor: CustomElementConstructor) {
+    customElements.define(name, constructor);
   }
 }

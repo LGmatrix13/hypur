@@ -9,5 +9,5 @@ export declare class Grain extends HTMLElement {
     constructor();
     connectedCallback(): void;
     disconnectedCallback(): void;
-    static mount(name: string, constructor: CustomElementConstructor, base?: string): void;
+    static mount(name: string, constructor: CustomElementConstructor): void;
 }

@@ -4,7 +4,7 @@
   "scripts": {
     "test": "bun run test",
     "build": "cd ./packages/grain && bun run build && cd ../router && bun run build",
-    "release": "bun run build && cd ../../ && changeset publish"
+    "release": "bun run build && changeset publish"
   },
   "workspaces": [
     "packages/*"
