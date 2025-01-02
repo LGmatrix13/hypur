@@ -1,4 +1,4 @@
-export declare class GrainForm<FData extends Record<string, any> = Record<string, any>> extends HTMLFormElement {
+export declare class GrainForm<FData extends Record<string, any> = Record<string, any>> extends HTMLElement {
     constructor();
     private fetcher;
     handlePrepareData(data: FData): FData | Promise<FData>;

@@ -2,14 +2,15 @@ import { loading } from "./loading";
 
 export class GrainForm<
   FData extends Record<string, any> = Record<string, any>
-> extends HTMLFormElement {
+> extends HTMLElement {
   constructor() {
     super();
-    this.addEventListener("submit", async (event) => {
+    const child = this.firstChild as HTMLFormElement;
+    child.addEventListener("submit", async (event) => {
       event.preventDefault();
-      const method = this.getAttribute("method") as string;
-      const action = this.getAttribute("action") as string;
-      const formData = new FormData(this);
+      const method = child.getAttribute("method") as string;
+      const action = child.getAttribute("action") as string;
+      const formData = new FormData(child);
       const data: Record<string, any> = {};
       formData.forEach((value, key) => {
         data[key] = value;
@@ -41,6 +42,6 @@ export class GrainForm<
   handleResponse(response: Response): void | Promise<void> {}
 
   static mount(name: string, constructor: CustomElementConstructor) {
-    customElements.define(name, constructor, { extends: "form" });
+    customElements.define(name, constructor);
   }
 }
