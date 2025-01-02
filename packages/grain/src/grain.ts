@@ -62,7 +62,13 @@ export class Grain extends HTMLElement {
     }
   }
 
-  static mount(name: string, constructor: CustomElementConstructor) {
-    customElements.define(name, constructor);
+  static mount(
+    name: string,
+    constructor: CustomElementConstructor,
+    base?: string
+  ) {
+    customElements.define(name, constructor, {
+      extends: base,
+    });
   }
 }

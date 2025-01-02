@@ -1,0 +1,20 @@
+{
+  "name": "@hypur/router",
+  "version": "0.0.1",
+  "private": false,
+  "main": "./build/index.js",
+  "module": "./build/index.js",
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "author": {
+    "name": "Liam Grossman"
+  },
+  "description": "An extremely lightweight (568 bytes bytes gziped) package to easily single page application like navigation for server-side applications.",
+  "scripts": {
+    "build": "bun build ./src/index.ts --outdir ./src/build/ --minify"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

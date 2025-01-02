@@ -1,4 +1,4 @@
-import { loading } from "./loading";
+import { loading } from "../../grain/src/loading";
 
 async function fetcher(url: URL) {
   const response = await fetch(url, {
