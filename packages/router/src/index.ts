@@ -11,9 +11,17 @@ async function fetcher(url: URL) {
   return html;
 }
 
+const history: Record<
+  string,
+  {
+    body: HTMLElement;
+    title: string;
+  }
+> = {};
+
 function refresh() {
   const links = Array.from(document.getElementsByTagName("a"));
-  const baseUrl = window.location.origin; // Get the base URL of the current page
+  const baseUrl = window.location.origin;
 
   links
     .filter((link) => link.getAttribute("hypur-link") !== "false")
@@ -21,7 +29,7 @@ function refresh() {
       const element = link as HTMLElement;
       const href = element.getAttribute("href");
 
-      if (href === null) {
+      if (!href) {
         throw new Error(
           `hypur link of id ${element.id} does not have an href attribute`
         );
@@ -29,37 +37,24 @@ function refresh() {
 
       const url = new URL(href, baseUrl);
 
-      const newElement = element.cloneNode(true) as HTMLElement;
-      element.replaceWith(newElement);
-
-      newElement.addEventListener("click", async (event) => {
-        loading.start();
-
+      // Click event
+      element.addEventListener("click", async (event) => {
         event.preventDefault();
-        const html = await fetcher(url);
 
-        const tempDiv = document.createElement("div");
-        tempDiv.innerHTML = html;
-
-        // Replace body content
-        const newBody = tempDiv.querySelector("body");
-        if (newBody) {
-          document.body.innerHTML = newBody.innerHTML;
-        }
-
-        // Handle script tags
-        const scripts = tempDiv.querySelectorAll("script");
-        scripts.forEach((script) => {
-          const newScript = document.createElement("script");
-          if (script.src) {
-            newScript.src = script.src;
-          } else {
-            newScript.textContent = script.textContent;
-          }
-          document.body.appendChild(newScript);
-        });
-
-        refresh();
+        loading.start();
+        const hypermedia = await fetcher(url);
+        const newHtml = new DOMParser().parseFromString(
+          hypermedia,
+          "text/html"
+        );
+        document.title = newHtml.title;
+        document.body.innerHTML = newHtml.body.innerHTML;
+        window.history.pushState({ pathname: url.pathname }, "", url.pathname);
+        history[url.pathname] = {
+          title: newHtml.title,
+          body: newHtml.body,
+        };
+        refresh(); // Reinitialize after loading new content
         loading.end();
       });
     });
@@ -69,11 +64,12 @@ document.addEventListener("DOMContentLoaded", () => {
   refresh();
 });
 
-window.addEventListener("popstate", async () => {
-  loading.start();
-  const url = new URL(window.location.href);
-  const html = await fetcher(url);
-  document.body.innerHTML = html;
+window.addEventListener("popstate", (e) => {
+  if (e.state) {
+    const page = history[e.state.pathname];
+    document.body.innerHTML = page.body.innerHTML;
+    document.title = page.title;
+    delete history[e.state.pathname];
+  }
   refresh();
-  loading.end();
 });
