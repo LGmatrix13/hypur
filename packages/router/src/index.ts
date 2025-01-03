@@ -37,8 +37,27 @@ function refresh() {
 
         event.preventDefault();
         const html = await fetcher(url);
-        history.pushState(null, "", url.href);
-        document.body.innerHTML = html;
+
+        const tempDiv = document.createElement("div");
+        tempDiv.innerHTML = html;
+
+        // Replace body content
+        const newBody = tempDiv.querySelector("body");
+        if (newBody) {
+          document.body.innerHTML = newBody.innerHTML;
+        }
+
+        // Handle script tags
+        const scripts = tempDiv.querySelectorAll("script");
+        scripts.forEach((script) => {
+          const newScript = document.createElement("script");
+          if (script.src) {
+            newScript.src = script.src;
+          } else {
+            newScript.textContent = script.textContent;
+          }
+          document.body.appendChild(newScript);
+        });
 
         refresh();
         loading.end();
