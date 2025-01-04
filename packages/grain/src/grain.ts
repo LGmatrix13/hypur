@@ -11,11 +11,11 @@ export class Grain extends HTMLElement {
     super();
   }
 
-  prop<T extends unknown = string>(
+  data<T extends unknown = string>(
     key: string,
     converter?: (value: string) => T
   ) {
-    const prop = this.getAttribute(key);
+    const prop = this.getAttribute(`data-${key}`);
     if (!prop) {
       throw new Error(`Grain does not have prop ${key}`);
     }
