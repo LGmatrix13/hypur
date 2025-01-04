@@ -5,11 +5,10 @@ import type { Method } from "./types";
 export class StatefulGrain<
   TState extends Record<string, any> = Record<string, any>
 > extends Grain {
-  state: TState;
+  state: TState = {} as TState;
 
   constructor() {
     super();
-    this.state = {} as TState;
   }
 
   async delete(url: string, logic?: (data: Response) => void | Promise<void>) {

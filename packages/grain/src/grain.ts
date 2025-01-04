@@ -1,3 +1,6 @@
+import { Sow } from "./sow";
+import type { Method } from "./types";
+
 export class Grain extends HTMLElement {
   onClick(event: Event): void {}
   onChange(event: Event): void {}
@@ -11,15 +14,12 @@ export class Grain extends HTMLElement {
     super();
   }
 
-  data<T extends unknown = string>(
-    key: string,
-    converter?: (value: string) => T
-  ) {
+  data<T = string>(key: string, converter?: (value: string) => T): T {
     const prop = this.getAttribute(`data-${key}`);
     if (!prop) {
-      throw new Error(`Grain does not have prop ${key}`);
+      throw new Error(`Grain does not have data ${key}`);
     }
-    const value = converter ? converter(prop) : prop;
+    const value = converter ? converter(prop) : (prop as unknown as T);
     return value;
   }
 
