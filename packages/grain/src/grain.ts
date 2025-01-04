@@ -15,7 +15,7 @@ export class Grain extends HTMLElement {
   }
 
   data<T = string>(key: string, converter?: (value: string) => T): T {
-    const prop = this.getAttribute(`data-${key}`);
+    const prop = this.dataset[`data-${key}`];
     if (!prop) {
       throw new Error(`Grain does not have data ${key}`);
     }
