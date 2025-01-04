@@ -18,7 +18,6 @@ const history: Record<
     title: string;
   }
 > = {};
-let lastLeave: Date | null = null;
 
 function refresh() {
   const links = Array.from(document.getElementsByTagName("a"));
@@ -62,24 +61,7 @@ function refresh() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  lastLeave = new Date();
   refresh();
-});
-
-document.addEventListener("mouseenter", async () => {
-  const difference =
-    new Date().getMilliseconds() - lastLeave!!.getMilliseconds();
-
-  const url = new URL(window.location.href);
-
-  if (difference > 300000) {
-    loading.start();
-    const hypermedia = await fetcher(url);
-    const newHtml = new DOMParser().parseFromString(hypermedia, "text/html");
-    document.title = newHtml.title;
-    document.body.innerHTML = newHtml.body.innerHTML;
-    loading.end();
-  }
 });
 
 window.addEventListener("popstate", (e) => {
