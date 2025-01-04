@@ -69,6 +69,14 @@ export class Sow {
     SNAPSHOTS[name] = element;
   }
 
+  static template<T extends HTMLElement = HTMLElement>(name: string) {
+    const element = document.querySelector(`template[sow="${name}"]`);
+    if (!element) {
+      throw new Error(`Sow could not find template ${element}`);
+    }
+    return element as T;
+  }
+
   static restore<T extends HTMLElement = HTMLElement>(name: string) {
     const snapshot = SNAPSHOTS[name];
     if (!snapshot) {
