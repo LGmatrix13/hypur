@@ -6,11 +6,12 @@ export class FormGrain<
   private form?: HTMLFormElement;
   constructor() {
     super();
-    if (this.form) {
-      this.form.addEventListener("submit", async (event) => {
+    const form = this.querySelector("form");
+    if (form) {
+      form.addEventListener("submit", async (event) => {
         event.preventDefault();
-        const method = this.form!!.getAttribute("method");
-        const action = this.form!!.getAttribute("action");
+        const method = form.getAttribute("method");
+        const action = form.getAttribute("action");
         const formData = new FormData(this.form);
         const data: Record<string, any> = {};
         formData.forEach((value, key) => {
@@ -33,11 +34,6 @@ export class FormGrain<
       });
     }
   }
-
-  private connectedCallback() {
-    this.form = this.querySelector("form") as HTMLFormElement;
-  }
-
   private async fetcher(url: URL, method: string, formData: FormData) {
     loading.start();
     const data = await fetch(url, {
