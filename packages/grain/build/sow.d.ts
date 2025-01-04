@@ -9,6 +9,7 @@ export declare class Sow {
     static clone<T extends HTMLElement = HTMLElement>(element: HTMLElement): T;
     static find<T extends HTMLElement = HTMLElement>(name: string): T;
     static snapshot(name: string): void;
+    static template(name: string): HTMLTemplateElement;
     static restore<T extends HTMLElement = HTMLElement>(name: string): T;
     static spread(element: HTMLElement, content: Record<string, any>): void;
     static remove(element: HTMLElement): void;

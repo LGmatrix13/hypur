@@ -69,12 +69,12 @@ export class Sow {
     SNAPSHOTS[name] = element;
   }
 
-  static template<T extends HTMLElement = HTMLElement>(name: string) {
+  static template(name: string) {
     const element = document.querySelector(`template[sow="${name}"]`);
     if (!element) {
       throw new Error(`Sow could not find template ${element}`);
     }
-    return element as T;
+    return element as HTMLTemplateElement;
   }
 
   static restore<T extends HTMLElement = HTMLElement>(name: string) {
@@ -92,7 +92,7 @@ export class Sow {
       if (!child) {
         const customElement = element.querySelector(key);
         if (!customElement) {
-          throw new Error(`Grain of nam ${key} could not be found`);
+          throw new Error(`Sow of name ${key} could not be found`);
         }
         (customElement as HTMLElement).innerText = content[key];
       } else {

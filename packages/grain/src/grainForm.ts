@@ -3,7 +3,6 @@ import { loading } from "./loading";
 export class FormGrain<
   FData extends Record<string, any> = Record<string, any>
 > extends HTMLElement {
-  private form?: HTMLFormElement;
   constructor() {
     super();
     const form = this.querySelector("form");
@@ -12,7 +11,8 @@ export class FormGrain<
         event.preventDefault();
         const method = form.getAttribute("method");
         const action = form.getAttribute("action");
-        const formData = new FormData(this.form);
+        const formData = new FormData(form);
+        console.log(formData);
         const data: Record<string, any> = {};
         formData.forEach((value, key) => {
           data[key] = value;
