@@ -23,7 +23,7 @@ export class Grain extends HTMLElement {
     return value;
   }
 
-  connectedCallback() {
+  private connectedCallback() {
     if (Grain.prototype.onClick !== this.onClick) {
       this.addEventListener("click", this.onClick.bind(this));
     }
@@ -47,7 +47,7 @@ export class Grain extends HTMLElement {
     }
   }
 
-  disconnectedCallback() {
+  private disconnectedCallback() {
     if (Grain.prototype.onClick !== this.onClick) {
       this.removeEventListener("click", this.onClick.bind(this));
     }
