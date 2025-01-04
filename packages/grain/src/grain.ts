@@ -1,49 +1,62 @@
-import { Sow } from "./sow";
-import type { Method } from "./types";
-
 export class Grain extends HTMLElement {
-  onClick(event: Event): void {}
-  onChange(event: Event): void {}
-  onInput(event: Event): void {}
-  onMouseOver(event: Event): void {}
-  onMouseOut(event: Event): void {}
-  onKeyDown(event: Event): void {}
-  onKeyUp(event: Event): void {}
+  onClick(event: Event): void | Promise<void> {}
+  onChange(event: Event): void | Promise<void> {}
+  onInput(event: Event): void | Promise<void> {}
+  onMouseOver(event: Event): void | Promise<void> {}
+  onMouseOut(event: Event): void | Promise<void> {}
+  onKeyDown(event: Event): void | Promise<void> {}
+  onKeyUp(event: Event): void | Promise<void> {}
 
   constructor() {
     super();
   }
 
-  data<T = string>(key: string, converter?: (value: string) => T): T {
-    const prop = this.dataset[`data-${key}`];
-    if (!prop) {
-      throw new Error(`Grain does not have data ${key}`);
+  private async resolver(
+    handler: (event: Event) => void | Promise<void>,
+    event: Event
+  ) {
+    try {
+      await handler.call(this, event);
+    } catch (error) {
+      console.error("Error in handler:", error);
     }
-    const value = converter ? converter(prop) : (prop as unknown as T);
-    return value;
   }
 
   private connectedCallback() {
     if (Grain.prototype.onClick !== this.onClick) {
-      this.addEventListener("click", this.onClick.bind(this));
+      this.addEventListener("click", async (event) => {
+        await this.resolver(this.onClick, event);
+      });
     }
     if (Grain.prototype.onChange !== this.onChange) {
-      this.addEventListener("change", this.onChange.bind(this));
+      this.addEventListener("change", async (event) => {
+        await this.resolver(this.onChange, event);
+      });
     }
     if (Grain.prototype.onInput !== this.onInput) {
-      this.addEventListener("input", this.onInput.bind(this));
+      this.addEventListener("input", async (event) => {
+        await this.resolver(this.onInput, event);
+      });
     }
     if (Grain.prototype.onMouseOver !== this.onMouseOver) {
-      this.addEventListener("mouseover", this.onMouseOver.bind(this));
+      this.addEventListener("mouseover", async (event) => {
+        await this.resolver(this.onMouseOver, event);
+      });
     }
     if (Grain.prototype.onMouseOut !== this.onMouseOut) {
-      this.addEventListener("mouseout", this.onMouseOut.bind(this));
+      this.addEventListener("mouseout", async (event) => {
+        await this.resolver(this.onMouseOut, event);
+      });
     }
     if (Grain.prototype.onKeyDown !== this.onKeyDown) {
-      this.addEventListener("keydown", this.onKeyDown.bind(this));
+      this.addEventListener("keydown", async (event) => {
+        await this.resolver(this.onKeyDown, event);
+      });
     }
     if (Grain.prototype.onKeyUp !== this.onKeyUp) {
-      this.addEventListener("keyup", this.onKeyUp.bind(this));
+      this.addEventListener("keyup", async (event) => {
+        await this.resolver(this.onKeyUp, event);
+      });
     }
   }
 

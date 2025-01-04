@@ -11,7 +11,7 @@ async function fetcher(url: URL) {
   return html;
 }
 
-const history: Record<
+const HISTORY: Record<
   string,
   {
     body: HTMLElement;
@@ -50,7 +50,7 @@ function refresh() {
         document.title = newHtml.title;
         document.body.innerHTML = newHtml.body.innerHTML;
         window.history.pushState({ pathname: url.pathname }, "", url.pathname);
-        history[url.pathname] = {
+        HISTORY[url.pathname] = {
           title: newHtml.title,
           body: newHtml.body,
         };
@@ -66,10 +66,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 window.addEventListener("popstate", (e) => {
   if (e.state) {
-    const page = history[e.state.pathname];
+    const page = HISTORY[e.state.pathname];
     document.body.innerHTML = page.body.innerHTML;
     document.title = page.title;
-    delete history[e.state.pathname];
+    delete HISTORY[e.state.pathname];
   }
   refresh();
 });

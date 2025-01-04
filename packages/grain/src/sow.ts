@@ -1,7 +1,7 @@
 import { loading } from "./loading";
 import type { Method } from "./types";
 
-const snapshots: Record<string, HTMLElement> = {};
+const SNAPSHOTS: Record<string, HTMLElement> = {};
 
 export class Sow {
   static within<T extends HTMLElement = HTMLElement>(
@@ -66,15 +66,15 @@ export class Sow {
 
   static snapshot(name: string) {
     const element = Sow.find(name).cloneNode(true) as HTMLElement;
-    snapshots[name] = element;
+    SNAPSHOTS[name] = element;
   }
 
   static restore<T extends HTMLElement = HTMLElement>(name: string) {
-    const snapshot = snapshots[name];
+    const snapshot = SNAPSHOTS[name];
     if (!snapshot) {
       throw new Error(`Sow could not find snapshot ${name}`);
     }
-    delete snapshots[name];
+    delete SNAPSHOTS[name];
     return snapshot as T;
   }
 
