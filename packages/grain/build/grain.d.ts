@@ -7,6 +7,7 @@ export declare class Grain extends HTMLElement {
     onKeyDown(event: Event): void;
     onKeyUp(event: Event): void;
     constructor();
+    prop<T extends unknown = string>(key: string, converter?: (value: string) => T): string | T;
     connectedCallback(): void;
     disconnectedCallback(): void;
     static mount(name: string, constructor: CustomElementConstructor): void;

@@ -1,57 +1,86 @@
 import { loading } from "./loading";
 import type { Method } from "./types";
 
+const snapshots: Record<string, HTMLElement> = {};
+
 export class Sow {
-  static within(element: HTMLElement, name: string) {
-    const within = element.querySelector(`[is="${name}"]`);
+  static within<T extends HTMLElement = HTMLElement>(
+    element: HTMLElement,
+    name: string
+  ) {
+    const within = element.querySelector(`[sow="${name}"]`);
     if (!within) {
       throw new Error(
         `No Grain of name ${name} found within requested element`
       );
     }
-    return within as HTMLElement;
+    return within as T;
   }
 
-  static last(name: string) {
-    const all = Array.from(document.querySelectorAll(`[is="${name}"]`));
+  static last<T extends HTMLElement = HTMLElement>(name: string) {
+    const all = Array.from(document.querySelectorAll(`[sow="${name}"]`));
     if (!all.length) {
       throw new Error(`No Grain of name ${name} could be found`);
     }
     const last = all[all.length - 1];
-    return last as HTMLElement;
+    return last as T;
   }
 
-  static first(name: string) {
-    const first = document.querySelector(`[is="${name}"]`);
-    if (!first) {
-      throw new Error(`No Grain of name ${name} could be found`);
-    }
-    return first as HTMLElement;
+  static first<T extends HTMLElement = HTMLElement>(name: string) {
+    return Sow.find(name) as T;
   }
 
-  static all(name: string) {
-    const all = Array.from(document.querySelectorAll(`[is="${name}"]`));
+  static all<T extends HTMLElement = HTMLElement>(name: string) {
+    const all = Array.from(document.querySelectorAll(`[sow="${name}"]`));
     if (!all.length) {
-      throw new Error(`No Grain of name ${name} could be found`);
+      throw new Error(`Sow could not find ${name}`);
     }
-    return all as HTMLElement[];
+    return all as T[];
   }
 
-  static append(element: HTMLElement, otherElement: HTMLElement) {
+  static append<T extends HTMLElement, K extends HTMLElement>(
+    element: T,
+    otherElement: K
+  ) {
     element.append(otherElement);
   }
 
-  static prepend(element: HTMLElement, otherElement: HTMLElement) {
+  static prepend<T extends HTMLElement, K extends HTMLElement>(
+    element: T,
+    otherElement: K
+  ) {
     element.prepend(otherElement);
   }
 
-  static clone(element: HTMLElement) {
-    return element.cloneNode(true) as HTMLElement;
+  static clone<T extends HTMLElement = HTMLElement>(element: HTMLElement) {
+    return element.cloneNode(true) as T;
+  }
+
+  static find<T extends HTMLElement = HTMLElement>(name: string) {
+    const element = document.querySelector(`[sow="${name}"]`);
+    if (!element) {
+      throw new Error(`Sow could not find ${name}`);
+    }
+    return element as T;
+  }
+
+  static snapshot(name: string) {
+    const element = Sow.find(name).cloneNode(true) as HTMLElement;
+    snapshots[name] = element;
+  }
+
+  static restore<T extends HTMLElement = HTMLElement>(name: string) {
+    const snapshot = snapshots[name];
+    if (!snapshot) {
+      throw new Error(`Sow could not find snapshot ${name}`);
+    }
+    delete snapshots[name];
+    return snapshot as T;
   }
 
   static spread(element: HTMLElement, content: Record<string, any>) {
     Object.keys(content).forEach((key) => {
-      const child = element.querySelector(`[is="${key}"]`);
+      const child = element.querySelector(`[sow="${key}"]`);
       if (!child) {
         const customElement = element.querySelector(key);
         if (!customElement) {

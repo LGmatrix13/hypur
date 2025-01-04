@@ -2,7 +2,7 @@ import { Grain } from "./grain";
 import { Sow } from "./sow";
 import type { Method } from "./types";
 
-export class ReactiveGrain<
+export class StatefulGrain<
   TState extends Record<string, any> = Record<string, any>
 > extends Grain {
   state: TState;

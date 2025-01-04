@@ -1,8 +1,8 @@
 export declare class GrainForm<FData extends Record<string, any> = Record<string, any>> extends HTMLElement {
     constructor();
     private fetcher;
-    handlePrepareData(data: FData): FData | Promise<FData>;
-    handleData(data: FData): void | Promise<void>;
-    handleResponse(response: Response): void | Promise<void>;
+    beforeSubmit(data: FData): FData | Promise<FData>;
+    onSubmit(data: FData): void | Promise<void>;
+    afterSubmit(response: Response): void | Promise<void>;
     static mount(name: string, constructor: CustomElementConstructor): void;
 }

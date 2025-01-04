@@ -8,20 +8,27 @@ export class GrainForm<
     const child = this.firstChild as HTMLFormElement;
     child.addEventListener("submit", async (event) => {
       event.preventDefault();
-      const method = child.getAttribute("method") as string;
-      const action = child.getAttribute("action") as string;
+      const method = child.getAttribute("method");
+      const action = child.getAttribute("action");
       const formData = new FormData(child);
       const data: Record<string, any> = {};
       formData.forEach((value, key) => {
         data[key] = value;
       });
-      const url = new URL(window.location.origin, action);
-      const prepardData = await Promise.resolve(
-        this.handlePrepareData(data as FData)
-      );
-      await Promise.resolve(this.handleData(prepardData));
-      const response = await this.fetcher(url, method, formData);
-      await Promise.resolve(this.handleResponse(response));
+      if (method && action) {
+        const url = new URL(window.location.origin, action);
+        const prepardData = await Promise.resolve(
+          this.beforeSubmit(data as FData)
+        );
+        await Promise.resolve(this.onSubmit(prepardData));
+        const response = await this.fetcher(url, method, formData);
+        await Promise.resolve(this.afterSubmit(response));
+      } else {
+        const prepardData = await Promise.resolve(
+          this.beforeSubmit(data as FData)
+        );
+        await Promise.resolve(this.onSubmit(prepardData));
+      }
     });
   }
 
@@ -35,11 +42,11 @@ export class GrainForm<
     return data;
   }
 
-  handlePrepareData(data: FData): FData | Promise<FData> {
+  beforeSubmit(data: FData): FData | Promise<FData> {
     return data;
   }
-  handleData(data: FData): void | Promise<void> {}
-  handleResponse(response: Response): void | Promise<void> {}
+  onSubmit(data: FData): void | Promise<void> {}
+  afterSubmit(response: Response): void | Promise<void> {}
 
   static mount(name: string, constructor: CustomElementConstructor) {
     customElements.define(name, constructor);

@@ -1,12 +1,15 @@
 import type { Method } from "./types";
 export declare class Sow {
-    static within(element: HTMLElement, name: string): HTMLElement;
-    static last(name: string): HTMLElement;
-    static first(name: string): HTMLElement;
-    static all(name: string): HTMLElement[];
-    static append(element: HTMLElement, otherElement: HTMLElement): void;
-    static prepend(element: HTMLElement, otherElement: HTMLElement): void;
-    static clone(element: HTMLElement): HTMLElement;
+    static within<T extends HTMLElement = HTMLElement>(element: HTMLElement, name: string): T;
+    static last<T extends HTMLElement = HTMLElement>(name: string): T;
+    static first<T extends HTMLElement = HTMLElement>(name: string): T;
+    static all<T extends HTMLElement = HTMLElement>(name: string): T[];
+    static append<T extends HTMLElement, K extends HTMLElement>(element: T, otherElement: K): void;
+    static prepend<T extends HTMLElement, K extends HTMLElement>(element: T, otherElement: K): void;
+    static clone<T extends HTMLElement = HTMLElement>(element: HTMLElement): T;
+    static find<T extends HTMLElement = HTMLElement>(name: string): T;
+    static snapshot(name: string): void;
+    static restore<T extends HTMLElement = HTMLElement>(name: string): T;
     static spread(element: HTMLElement, content: Record<string, any>): void;
     static remove(element: HTMLElement): void;
     private static fetcher;

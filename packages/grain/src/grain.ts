@@ -11,6 +11,18 @@ export class Grain extends HTMLElement {
     super();
   }
 
+  prop<T extends unknown = string>(
+    key: string,
+    converter?: (value: string) => T
+  ) {
+    const prop = this.getAttribute(key);
+    if (!prop) {
+      throw new Error(`Grain does not have prop ${key}`);
+    }
+    const value = converter ? converter(prop) : prop;
+    return value;
+  }
+
   connectedCallback() {
     if (Grain.prototype.onClick !== this.onClick) {
       this.addEventListener("click", this.onClick.bind(this));
