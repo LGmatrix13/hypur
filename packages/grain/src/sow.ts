@@ -103,7 +103,7 @@ export class Sow {
     data: Record<string, any>
   ) {
     loading.start();
-    const fullUrl = new URL(window.origin, url);
+    const fullUrl = new URL(url, window.origin);
     const response = await fetch(fullUrl, {
       method: method,
       body: JSON.stringify(data),
