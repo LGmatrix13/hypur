@@ -1,0 +1,22 @@
+{
+  "name": "@hypur/stream",
+  "version": "0.0.1",
+  "private": false,
+  "main": "./build/index.js",
+  "module": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "author": {
+    "name": "Liam Grossman"
+  },
+  "description": "Implement HTML and JSON streaming for serverr-side applications.",
+  "scripts": {
+    "build": "bun build ./src/index.ts --outdir ./build --minify && bun run build:declaration",
+    "build:declaration": "tsc --emitDeclarationOnly --project tsconfig.types.json"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
