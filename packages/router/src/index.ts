@@ -1,5 +1,3 @@
-import { loading } from "../../grain/src/loading";
-
 async function fetcher(url: URL) {
   const response = await fetch(url, {
     method: "GET",
@@ -40,8 +38,6 @@ function refresh() {
       // Click event
       element.addEventListener("click", async (event) => {
         event.preventDefault();
-
-        loading.start();
         const hypermedia = await fetcher(url);
         const newHtml = new DOMParser().parseFromString(
           hypermedia,
@@ -55,7 +51,6 @@ function refresh() {
           body: newHtml.body,
         };
         refresh(); // Reinitialize after loading new content
-        loading.end();
       });
     });
 }
@@ -69,7 +64,6 @@ window.addEventListener("popstate", (e) => {
     const page = HISTORY[e.state.pathname];
     document.body.innerHTML = page.body.innerHTML;
     document.title = page.title;
-    delete HISTORY[e.state.pathname];
   }
   refresh();
 });

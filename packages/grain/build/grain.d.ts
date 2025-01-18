@@ -1,4 +1,4 @@
-export declare class Grain extends HTMLElement {
+export declare abstract class Grain extends HTMLElement {
     onClick(event: Event): void | Promise<void>;
     onChange(event: Event): void | Promise<void>;
     onInput(event: Event): void | Promise<void>;
@@ -10,5 +10,5 @@ export declare class Grain extends HTMLElement {
     private resolver;
     private connectedCallback;
     private disconnectedCallback;
-    static mount(name: string, constructor: CustomElementConstructor): void;
+    static mount(tag: string, constructor: CustomElementConstructor): void;
 }

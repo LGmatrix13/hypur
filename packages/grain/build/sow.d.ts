@@ -11,6 +11,7 @@ export declare class Sow {
     static snapshot(name: string): void;
     static template(name: string): HTMLTemplateElement;
     static restore<T extends HTMLElement = HTMLElement>(name: string): T;
+    static delay(ms: number): Promise<unknown>;
     static spread(element: HTMLElement, content: Record<string, any>): void;
     static remove(element: HTMLElement): void;
     private static fetcher;
