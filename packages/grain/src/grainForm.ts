@@ -1,5 +1,3 @@
-import { loading } from "./loading";
-
 export class FormGrain<
   FData extends Record<string, any> = Record<string, any>
 > extends HTMLElement {
@@ -11,19 +9,25 @@ export class FormGrain<
         event.preventDefault();
         const method = form.getAttribute("method");
         const action = form.getAttribute("action");
-        const formData = new FormData(form);
-        console.log(formData);
+        const inputs = this.querySelectorAll("input");
         const data: Record<string, any> = {};
-        formData.forEach((value, key) => {
-          data[key] = value;
+        inputs.forEach((input) => {
+          let value = null;
+          switch (input.type) {
+            case "text":
+              value = input.value;
+              break;
+            case "number":
+              value = Number(input.value);
+          }
+          data[input.name] = value;
         });
         if (method && action) {
-          const url = new URL(window.location.origin, action);
           const prepardData = await Promise.resolve(
             this.beforeSubmit(data as FData)
           );
           await Promise.resolve(this.onSubmit(prepardData));
-          const response = await this.fetcher(url, method, formData);
+          const response = await this.fetcher(action, method, data);
           await Promise.resolve(this.afterSubmit(response));
         } else {
           const prepardData = await Promise.resolve(
@@ -34,14 +38,16 @@ export class FormGrain<
       });
     }
   }
-  private async fetcher(url: URL, method: string, formData: FormData) {
-    loading.start();
-    const data = await fetch(url, {
+  private async fetcher(
+    url: string,
+    method: string,
+    data: Record<string, unknown>
+  ) {
+    const response = await fetch(url, {
       method: method,
-      body: formData,
+      body: JSON.stringify(data),
     });
-    loading.end();
-    return data;
+    return response;
   }
 
   beforeSubmit(data: FData): FData | Promise<FData> {
@@ -50,7 +56,7 @@ export class FormGrain<
   onSubmit(data: FData): void | Promise<void> {}
   afterSubmit(response: Response): void | Promise<void> {}
 
-  static mount(name: string, constructor: CustomElementConstructor) {
-    customElements.define(name, constructor);
+  static mount(tag: string, constructor: CustomElementConstructor) {
+    customElements.define(tag, constructor);
   }
 }

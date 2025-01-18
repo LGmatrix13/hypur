@@ -1,4 +1,3 @@
-import { loading } from "./loading";
 import type { Method } from "./types";
 
 const SNAPSHOTS: Record<string, HTMLElement> = {};
@@ -86,6 +85,10 @@ export class Sow {
     return snapshot as T;
   }
 
+  static delay(ms: number) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
   static spread(element: HTMLElement, content: Record<string, any>) {
     Object.keys(content).forEach((key) => {
       const child = element.querySelector(`[sow="${key}"]`);
@@ -110,13 +113,11 @@ export class Sow {
     method: Method,
     data: Record<string, any>
   ) {
-    loading.start();
     const fullUrl = new URL(url, window.origin);
     const response = await fetch(fullUrl, {
       method: method,
       body: JSON.stringify(data),
     });
-    loading.end();
     return response;
   }
 

@@ -1,4 +1,4 @@
-export class Grain extends HTMLElement {
+export abstract class Grain extends HTMLElement {
   onClick(event: Event): void | Promise<void> {}
   onChange(event: Event): void | Promise<void> {}
   onInput(event: Event): void | Promise<void> {}
@@ -84,7 +84,7 @@ export class Grain extends HTMLElement {
     }
   }
 
-  static mount(name: string, constructor: CustomElementConstructor) {
-    customElements.define(name, constructor);
+  static mount(tag: string, constructor: CustomElementConstructor) {
+    customElements.define(tag, constructor);
   }
 }
