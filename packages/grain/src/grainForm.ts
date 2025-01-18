@@ -10,24 +10,36 @@ export class FormGrain<
         const method = form.getAttribute("method");
         const action = form.getAttribute("action");
         const inputs = this.querySelectorAll("input");
+        const textareas = this.querySelectorAll("textarea");
         const data: Record<string, any> = {};
         inputs.forEach((input) => {
           let value = null;
           switch (input.type) {
-            case "text":
-              value = input.value;
-              break;
             case "number":
               value = Number(input.value);
+              break;
+            default:
+              value = input.value;
           }
           data[input.name] = value;
+        });
+        textareas.forEach((textarea) => {
+          let value = null;
+          switch (textarea.type) {
+            case "number":
+              value = Number(textarea.value);
+              break;
+            default:
+              value = textarea.value;
+          }
+          data[textarea.name] = value;
         });
         if (method && action) {
           const prepardData = await Promise.resolve(
             this.beforeSubmit(data as FData)
           );
           await Promise.resolve(this.onSubmit(prepardData));
-          const response = await this.fetcher(action, method, data);
+          const response = await this.fetcher(action, method, prepardData);
           await Promise.resolve(this.afterSubmit(response));
         } else {
           const prepardData = await Promise.resolve(
@@ -48,6 +60,13 @@ export class FormGrain<
       body: JSON.stringify(data),
     });
     return response;
+  }
+
+  reset() {
+    const form = this.querySelector("form");
+    if (form) {
+      form.reset();
+    }
   }
 
   beforeSubmit(data: FData): FData | Promise<FData> {
