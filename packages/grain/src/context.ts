@@ -24,4 +24,8 @@ export class Context<T extends unknown> {
   set(value: T) {
     window.HYPUR_CONTEXT[this.key] = value;
   }
+
+  clear() {
+    delete window.HYPUR_CONTEXT[this.key];
+  }
 }
